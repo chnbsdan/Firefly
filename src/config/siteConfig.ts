@@ -106,15 +106,15 @@ export const siteConfig: SiteConfig = {
         // 主页显示自定义文本（全局开关）
         enable: true,
         // 主页横幅主标题
-        title: "Lovely firefly!",
+        title: "My Heart Will Go On!",
         // 主页横幅副标题
         subtitle: [
-          "In Reddened Chrysalis, I Once Rest",
-          "From Shattered Sky, I Free Fall",
-          "Amidst Silenced Stars, I Deep Sleep",
-          "Upon Lighted Fyrefly, I Soon Gaze",
-          "From Undreamt Night, I Thence Shine",
-          "In Finalized Morrow, I Full Bloom",
+          "会当凌绝顶,一览众山小",
+"长风破浪会有时,直挂云帆济沧海",
+"不经一番寒彻骨,怎得梅花扑鼻香",
+"生当作人杰,死亦为鬼雄",
+"路漫漫其修远兮,吾将上下而求索",
+"欲穷千里目,更上一层楼",
         ],
         typewriter: {
           enable: true, // 启用副标题打字机效果
