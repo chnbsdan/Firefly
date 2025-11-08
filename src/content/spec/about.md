@@ -20,7 +20,7 @@
 
 ::github{repo="chnbsdan/Firefly"}
 
-<img src="/assets/images/firefly.png" />
+<img src="/assets/images/fly.png" />
 
 
 
@@ -28,7 +28,7 @@
 
 如果你想和我交流技术问题，分享有趣的想法，或者只是想打个招呼，欢迎通过以下方式联系我：
 
-- 💻 **GitHub**: [CuteLeaf](https://github.com/chnbsdan)
+- 💻 **GitHub**: [Chnbsdan](https://github.com/chnbsdan)
 - ✉️ **Email**: [chnbsdan@gmail.com](mailto:chnbsdan@gmail.com)
 
 ---
