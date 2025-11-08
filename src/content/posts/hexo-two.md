@@ -10,9 +10,9 @@ author: "史生"
 sourceLink: "https://github.com/zhangsan/vue3-guide"
 draft: false
 date: 2025-11-08
-image:
-  url: 'https://images.myso.dpdns.org/hexo/hexo主题安装美化.webp'
-  alt: '【Hexo blog NO.2】如何安装和美化|使用安知鱼主题进行个性化配置封面'
+# 修改这里：将对象改为字符串
+image: "https://images.myso.dpdns.org/hexo/hexo主题安装美化.webp"
+# 如果需要 alt 文本，可以放在其他地方或删除
 pubDate: 2025-11-08
 ---
 
