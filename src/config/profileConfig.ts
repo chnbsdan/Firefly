@@ -1,7 +1,7 @@
 import type { ProfileConfig } from "../types/config";
 
 export const profileConfig: ProfileConfig = {
-  avatar: "https://cdn.jsdelivr.net/gh/chnbsdan/cloudflare-workers-blog@master/themes/mya/files/hangdn.ico",
+  avatar: "/assets/images/sh2.jpg",
   name: "hangdn",
   bio: "Hello, I'm hangdn.",
   links: [
