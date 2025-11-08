@@ -9,11 +9,11 @@ licenseName: "CC BY 4.0"
 author: "张三"
 sourceLink: "https://github.com/zhangsan/vue3-guide"
 draft: false
-date: 2025-01-20
+date: 2025-11-8
 image:
   url: 'https://images.myso.dpdns.org/hexo/hexo主题安装美化.webp'
   alt: '【Hexo blog NO.2】如何安装和美化|使用安知鱼主题进行个性化配置封面'
-pubDate: 2025-01-20
+pubDate: 2025-11-8
 ---
 
 # 美化Hexo博客，主题安装配置
