@@ -1,10 +1,10 @@
 ---
 title: "【Hexo blog NO.2】如何安装和美化|使用安知鱼主题进行个性化配置"
 published: 2025-01-20
-pinned: false
+pinned: true
 description: "深入了解Vue.js 3的组合式API，包括setup函数、响应式系统和生命周期钩子。"
 tags: [Vue.js, JavaScript, Frontend, API]
-category: "Web Development"
+category: "hexo"
 licenseName: "CC BY 4.0"
 author: "张三"
 sourceLink: "https://github.com/zhangsan/vue3-guide"
