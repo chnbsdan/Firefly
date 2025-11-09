@@ -4,7 +4,7 @@ published: 2025-01-18
 pinned: true
 description: "教程完整版，快速简洁搭建HEXO博客，以及安装和美化使用安知鱼主题进行个性化配置。"
 tags: [hexo,教程,博客]
-category: "hexo，博客指南"
+category: "hexo"
 licenseName: "CC BY 4.0"
 author: "小史先森"
 sourceLink: "https://github.com/zhangsan/vue3-guide"
