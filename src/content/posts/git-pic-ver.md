@@ -32,43 +32,43 @@ pubDate: 2025-11-02
 
 # 创建Github私库并获取Token
 
-1.创建一个Github仓库的私库,打开：https://github.com/new 看图设置，项目名称随你设置，最后点击 Create repository 完成创建！
+## 1.创建一个Github仓库的私库,打开：https://github.com/new 看图设置，项目名称随你设置，最后点击 Create repository 完成创建！
 ![](https://images.myso.dpdns.org/20250723-5.webp)
 
-2.获取 Github Token 打开：https://github.com/settings/tokens，然后点击 Generate new Token(Classic) ，把 repo 的勾打上，根据自己的需要设定过期时间(我设置的不过期)。然后翻到页面最底部，点击 Generate Token 的绿色按钮生成token。
+## 2.获取 Github Token 打开：https://github.com/settings/tokens，然后点击 Generate new Token(Classic) ，把 repo 的勾打上，根据自己的需要设定过期时间(我设置的不过期)。然后翻到页面最底部，点击 Generate Token 的绿色按钮生成token。
 ![](https://images.myso.dpdns.org/20250723-3.webp)
 
-3.Token只会显示一次，请复制Token后存到安全的地方，稍后设置软件需要用到，Github的相关设置完成！
+## 3.Token只会显示一次，请复制Token后存到安全的地方，稍后设置软件需要用到，Github的相关设置完成！
 ![](https://images.myso.dpdns.org/20250723-4.webp)
 
 # Vercel部署
 
-1.使用Vercel部署 打开：https://vercel.com/new 选择你刚创建的私库！
+## 1.使用Vercel部署 打开：https://vercel.com/new 选择你刚创建的私库！
 ![](https://images.myso.dpdns.org/20250723-5.webp)
 
-2.直接点击 Deploy 部署即可，项目名称随你设置，我就默认了，等待部署完成。
+## 2.直接点击 Deploy 部署即可，项目名称随你设置，我就默认了，等待部署完成。
 ![](https://images.myso.dpdns.org/20250723-6.webp)
 
-3.给项目设置自定义域名，套上 CDN 加速。
+## 3.给项目设置自定义域名，套上 CDN 加速。
 ![](https://images.myso.dpdns.org/20250723-8.webp)
 
-4.完成上一步操作后你设置的自定义域名，稍后设置软件需要用到，Vercel的相关设置完成！
+## 4.完成上一步操作后你设置的自定义域名，稍后设置软件需要用到，Vercel的相关设置完成！
 
 # Cloudflare部署
 
 可选项！！！这两个部署选一个就行，因为Vercel部署有现成的加速方案，我一般偏向使用Vercel进行部署，Cloudflare部署，我是没有什么好的加速方案，所以就不详细演示了。基本同理操作就是没有上方的套 CDN 加速的步骤。
-1.选择你刚创建的私库。
+## 1.选择你刚创建的私库。
 ![](https://images.myso.dpdns.org/20250723-9.webp)
-2.保存并部署。
+## 2.保存并部署。
 ![](https://images.myso.dpdns.org/20250723-10.webp)
 
 # PicList相关设置
 
 [Piclist为开源项目](https://github.com/Kuingsmile/PicList/releases)，操作界面很贴心，下面为设置操作：
-1.点击软件界面中的 图床 → Gihub → 设置修改
+## 1.点击软件界面中的 图床 → Gihub → 设置修改
 ![](https://images.myso.dpdns.org/20250723-11.webp)
 
-2.按照下方图片进行设置，设置完成最后点击确定保存！
+## 2.按照下方图片进行设置，设置完成最后点击确定保存！
 ```PLAINTEXT
 "图床配置名" = 图床配置名，你自己随意设置
 "设定仓库名" = 格式是username/reponame，你的Github用户名/仓库地址，例如:zrf/images
@@ -79,11 +79,11 @@ pubDate: 2025-11-02
 ```
 ![](https://images.myso.dpdns.org/20250723-12.webp)
 
-3.软件首页 上传区 切换使用你的Github图床，也可在 图床 → Gihub → 设置为默认图床
+## 3.软件首页 上传区 切换使用你的Github图床，也可在 图床 → Gihub → 设置为默认图床
 
 ![](https://images.myso.dpdns.org/20250723-13.webp)
 
-4.你可以使用 PicList 上传图片视频以及压缩包等，Github 支持很多上传格式，到此就完成了图床的所有设置！
+## 4.你可以使用 PicList 上传图片视频以及压缩包等，Github 支持很多上传格式，到此就完成了图床的所有设置！
 ![](https://images.myso.dpdns.org/20250723-14.webp)
 
 
