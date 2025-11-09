@@ -7,10 +7,6 @@
   <span id="vercount_container_site_pv">
     本站总访问量：<span id="vercount_value_site_pv">Loading...</span> 次
   </span>
-  <span class="stats-separator">|</span>
-  <span id="word-count-container">
-    本站总字数：<span id="word-count-value">7.4k</span> 字
-  </span>
 </div>
 
 <!-- Vercount统计脚本 -->
@@ -18,163 +14,43 @@
 
 <!-- 站点运行时间 -->
 <div class="site-build-time">
-  <span>本站已正常运行<span id="runtime-counter"></span></span>
+  <span>本站已正常运行 <span id="runtime-counter">0天0时0分0秒</span></span>
 </div>
 
 <script>
 (function(){
-  const buildtime = "2025-05-01T10:00:00"; // 修改为您的实际构建时间
-
-  if (buildtime) {
+  // 设置网站开始运行的时间（修改为您的实际上线时间）
+  const startDate = new Date('2025-05-01T10:00:00');
+  
+  function updateRuntime() {
+    const now = new Date();
+    const diffTime = Math.max(0, now - startDate);
+    
+    // 计算天、时、分、秒
+    const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diffTime % (1000 * 60)) / 1000);
+    
+    // 更新显示
     const runtimeCounter = document.getElementById('runtime-counter');
     if (runtimeCounter) {
-      // 解析构建时间，处理多种格式
-      let buildTimeDate;
-      try {
-        if (typeof buildtime === 'string') {
-          // 日期字符串处理
-          const dateStr = buildtime.trim();
-          // 标准ISO格式: '2023-06-20T10:00:00' 或带时区的 '2023-06-20T10:00:00+08:00'
-          if (dateStr.includes('T')) {
-            // 确保正确解析带时区的ISO时间
-            buildTimeDate = new Date(dateStr);
-          } 
-          // 处理常见的中文日期格式: '2023-06-20 10:00:00'
-          else if (dateStr.includes(' ') && dateStr.includes(':')) {
-            // 分离日期和时间部分
-            const [datePart, timePart] = dateStr.split(' ');
-            if (datePart && timePart) {
-              const [year, month, day] = datePart.split('-');
-              const timeParts = timePart.split(':');
-              
-              const hour = timeParts[0] || '00';
-              const minute = timeParts[1] || '00';
-              const second = timeParts[2] || '00';
-              
-              // 使用 Date 构造函数 - 注意月份从0开始
-              buildTimeDate = new Date(
-                parseInt(year),
-                parseInt(month) - 1, 
-                parseInt(day),
-                parseInt(hour),
-                parseInt(minute),
-                parseInt(second)
-              );
-            }
-          }
-          // 仅有日期的格式: '2023-06-20'
-          else if (dateStr.includes('-')) {
-            const [year, month, day] = dateStr.split('-');
-            // 使用 Date 构造函数 - 注意月份从0开始
-            buildTimeDate = new Date(
-              parseInt(year),
-              parseInt(month) - 1, 
-              parseInt(day)
-            );
-          }
-          // 时间戳格式 (数字字符串)
-          else if (/^\d+$/.test(dateStr)) {
-            buildTimeDate = new Date(parseInt(dateStr));
-          }
-          // 尝试直接解析
-          else {
-            buildTimeDate = new Date(dateStr);
-          }
-        }
-        // Date 对象
-        else if (buildtime instanceof Date) {
-          buildTimeDate = buildtime;
-        } 
-        // 数字时间戳
-        else if (typeof buildtime === 'number') {
-          buildTimeDate = new Date(buildtime);
-        }
-        
-        // 确保构建时间是有效的日期且不是未来日期
-        if (!buildTimeDate || isNaN(buildTimeDate.getTime())) {
-          console.warn('网站构建时间格式无效，无法解析: ' + buildtime);
-          // 使用备用日期（当前日期减去1天，作为默认值）
-          const yesterday = new Date();
-          yesterday.setDate(yesterday.getDate() - 1);
-          buildTimeDate = yesterday;
-        } else {
-          // 防止使用未来日期，未来日期会导致计算出负值
-          const now = new Date();
-          if (buildTimeDate.getTime() > now.getTime()) {
-            console.warn('构建时间设置为未来，将使用当前时间: ' + buildtime);
-            buildTimeDate = new Date(now.getTime() - 86400000); // 使用一天前的时间
-          }
-        }
-      } catch (e) {
-        console.error('解析网站构建时间时发生错误:', e);
-        // 使用备用日期（当前日期减去1天，作为默认值）
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        buildTimeDate = yesterday;
-      }
-      
-      function updateRuntime() {
-        const now = new Date();
-        const diff = now.getTime() - buildTimeDate.getTime();
-        
-        // 计算天、时、分、秒
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        
-        // 添加千分位分隔符并格式化显示
-        const formatNumber = (num) => {
-          if (num < 1000) return String(num);
-          return num.toLocaleString('zh-CN');
-        };
-        
-        // 格式化显示，添加带有特殊样式的文本
-        runtimeCounter.innerHTML = `${formatNumber(days)}<span class="time-unit">天</span>${hours}<span class="time-unit">时</span>${minutes}<span class="time-unit">分</span>${seconds}<span class="time-unit">秒</span>`;
-      }
-      
-      // 初次运行
-      updateRuntime();
-      
-      // 设置定时器，每秒更新一次
-      setInterval(updateRuntime, 1000);
+      runtimeCounter.textContent = `${days}天${hours}时${minutes}分${seconds}秒`;
     }
   }
-})();
-
-// src/layouts/Layout.astro
-// 1. 导入内容集合工具函数和你的站点配置
-import { getCollection } from 'astro:content';
-// 假设你有一个获取所有文章的辅助函数，或者直接使用 getCollection
-// 如果你的博客集合名为 'blog'
-const allPosts = await getCollection('blog');
-// 初始化总字数
-let totalWordCount = 0;
-
-// 2. 遍历所有文章，累加字数
-// 这里假设每篇文章的 Frontmatter 中有一个 'wordCount' 字段
-for (const post of allPosts) {
-  // 确保 post.data.wordCount 存在，如果不存在可以给个默认值0，或者尝试从正文计算
-  totalWordCount += post.data.wordCount || 0;
-}
-
-// 3. 格式化总字数
-const formatWordCount = (count) => {
-  if (count >= 10000) {
-    return (count / 10000).toFixed(1) + 'w';
-  } else if (count >= 1000) {
-    return (count / 1000).toFixed(1) + 'k';
-  }
-  return count.toString();
-};
-const formattedTotal = formatWordCount(totalWordCount);
   
+  // 立即执行一次，然后每秒更新
+  updateRuntime();
+  setInterval(updateRuntime, 1000);
+})();
 </script>
+
 <style>
 .site-stats {
   margin: 10px 0;
   font-size: 0.9rem;
   color: #666;
+  text-align: center;
 }
 
 .stats-separator {
@@ -186,11 +62,11 @@ const formattedTotal = formatWordCount(totalWordCount);
   margin: 10px 0;
   font-size: 0.9rem;
   color: #666;
+  text-align: center;
 }
 
-.time-unit {
-  margin: 0 2px;
-  color: #999;
-  font-size: 0.8em;
+.site-build-time #runtime-counter {
+  font-weight: bold;
+  color: #10b981; /* 绿色高亮显示 */
 }
-</style>    
+</style>
