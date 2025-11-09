@@ -1,3 +1,58 @@
-<div class="copyright">
-  <p>本网站内容采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 协议</p>
+<div class="runtime-section">
+    <div class="runtime-info">
+        本站已稳定运行 <span id="runtime-days" class="days-count">0</span> 天 
+        <span id="runtime-hours">0</span> 小时 
+        <span id="runtime-minutes">0</span> 分钟 
+        <span id="runtime-seconds">0</span> 秒
+    </div>
+    <div class="tech-info">
+        © 2025 Hangdn blog - 基于github + Vercel 搭建
+    </div>
 </div>
+
+<script>
+    // 设置网站开始运行的日期（修改为你的网站实际上线日期）
+    const startDate = new Date('2025-11-01'); // 修改为你的实际上线日期
+    
+    function updateRuntime() {
+        const now = new Date();
+        const diffTime = now - startDate;
+        
+        const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diffTime % (1000 * 60)) / 1000);
+        
+        document.getElementById('runtime-days').textContent = days;
+        document.getElementById('runtime-hours').textContent = hours;
+        document.getElementById('runtime-minutes').textContent = minutes;
+        document.getElementById('runtime-seconds').textContent = seconds;
+    }
+    
+    // 页面加载时更新，然后每秒更新一次
+    updateRuntime();
+    setInterval(updateRuntime, 1000);
+</script>
+
+<style>
+    .runtime-section {
+        text-align: center;
+        padding: 1rem 0;
+        color: #666;
+        font-size: 0.875rem;
+    }
+    
+    .runtime-info {
+        margin-bottom: 0.5rem;
+    }
+    
+    .days-count {
+        color: #3b82f6;
+        font-weight: bold;
+        font-size: 1.125rem;
+    }
+    
+    .tech-info {
+        opacity: 0.8;
+    }
+</style>
