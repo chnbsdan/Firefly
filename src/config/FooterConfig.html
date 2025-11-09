@@ -10,80 +10,71 @@
 </div>
 
 <script>
-// 移动端兼容的运行时间计算
-(function() {
-    'use strict';
+// 增强版的运行时间计算
+function initializeRuntime() {
+    const startDate = new Date('2025-11-01T08:00:00'); // 使用具体时间
     
-    // 等待页面完全加载
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initRuntime);
-    } else {
-        // 如果DOM已经加载完成，立即执行
-        setTimeout(initRuntime, 100);
-    }
-    
-    function initRuntime() {
-        console.log('初始化运行时间计算');
+    function updateRuntime() {
+        const now = new Date();
+        const diffTime = Math.max(0, now - startDate); // 确保不为负数
         
-        // 设置网站开始运行的日期（修改为你的实际上线日期）
-        const startDate = new Date('2025-11-01');
-        console.log('开始日期:', startDate.toLocaleString());
+        const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diffTime % (1000 * 60)) / 1000);
         
-        let updateCount = 0;
+        // 更新DOM元素 - 添加安全检查
+        const elements = {
+            days: document.getElementById('runtime-days'),
+            hours: document.getElementById('runtime-hours'),
+            minutes: document.getElementById('runtime-minutes'),
+            seconds: document.getElementById('runtime-seconds')
+        };
         
-        function updateRuntime() {
-            try {
-                updateCount++;
-                const now = new Date();
-                const diffTime = now - startDate;
-                
-                console.log(`第${updateCount}次更新，时间差:`, diffTime);
-                
-                if (diffTime > 0) {
-                    const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((diffTime % (1000 * 60)) / 1000);
-                    
-                    console.log('计算结果:', {days, hours, minutes, seconds});
-                    
-                    // 使用更安全的元素查找方式
-                    const elements = {
-                        days: document.getElementById('runtime-days'),
-                        hours: document.getElementById('runtime-hours'), 
-                        minutes: document.getElementById('runtime-minutes'),
-                        seconds: document.getElementById('runtime-seconds')
-                    };
-                    
-                    console.log('找到的元素:', elements);
-                    
-                    // 更新元素内容
-                    if (elements.days) elements.days.textContent = days;
-                    if (elements.hours) elements.hours.textContent = hours;
-                    if (elements.minutes) elements.minutes.textContent = minutes;
-                    if (elements.seconds) elements.seconds.textContent = seconds;
-                    
-                    // 如果第一次更新成功，记录日志
-                    if (updateCount === 1 && elements.days && elements.days.textContent !== '0') {
-                        console.log('✅ 运行时间计算成功！');
-                    }
-                } else {
-                    console.warn('时间差为负数，请检查开始日期设置');
-                }
-            } catch (error) {
-                console.error('运行时间计算错误:', error);
+        // 检查元素是否存在且可见
+        for (const [key, element] of Object.entries(elements)) {
+            if (element) {
+                element.textContent = eval(key); // days, hours, minutes, seconds
+                // 确保元素可见
+                element.style.display = 'inline';
+                element.style.visibility = 'visible';
+                element.style.opacity = '1';
             }
         }
         
-        // 多次尝试初始化，确保移动端能执行
-        setTimeout(updateRuntime, 50);
-        setTimeout(updateRuntime, 200);
-        setTimeout(updateRuntime, 500);
-        
-        // 然后每秒更新
+        console.log(`运行时间更新: ${days}天 ${hours}小时 ${minutes}分钟 ${seconds}秒`);
+    }
+    
+    // 多种初始化方式确保执行
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            updateRuntime();
+            setInterval(updateRuntime, 1000);
+        });
+    } else {
+        updateRuntime();
         setInterval(updateRuntime, 1000);
     }
-})();
+    
+    // 移动端特殊处理
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        console.log('移动端设备检测，应用特殊样式');
+        // 移动端延迟检查
+        setTimeout(() => {
+            const daysElement = document.getElementById('runtime-days');
+            if (daysElement && daysElement.textContent === '0') {
+                console.log('移动端数字显示问题，强制刷新');
+                updateRuntime();
+            }
+        }, 2000);
+    }
+}
+
+// 启动运行时间计算
+initializeRuntime();
+
+// 备用初始化方案
+setTimeout(initializeRuntime, 500);
 </script>
 
 <style>
@@ -92,6 +83,7 @@
     padding: 0.5rem 0;
     color: #666;
     font-size: 0.875rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 .runtime-info {
@@ -99,31 +91,67 @@
     line-height: 1.5;
 }
 
+/* 修复渐变文本的移动端兼容性 */
 .days-count {
-    color: #10b981;
+    background: linear-gradient(135deg, #10b981, #22c55e);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: #10b981; /* 备用颜色 */
     font-weight: bold;
     font-size: 1rem;
+    display: inline-block; /* 重要：确保渐变效果正确应用 */
+}
+
+/* 确保其他数字也可见 */
+#runtime-hours, #runtime-minutes, #runtime-seconds {
+    color: #666;
+    font-weight: normal;
+    display: inline;
 }
 
 /* 移动端优化 */
 @media (max-width: 768px) {
     .runtime-section {
         font-size: 0.8rem;
-        padding: 0.3rem 0;
+        padding: 0.5rem 0.5rem;
     }
     
     .runtime-info {
-        margin-bottom: 0.3rem;
+        word-break: keep-all;
+        white-space: nowrap;
     }
     
     .days-count {
         font-size: 0.9rem;
+        /* 移动端备用方案：使用纯色 */
+        background: none;
+        -webkit-text-fill-color: initial;
+        color: #10b981;
     }
     
-    /* 确保移动端文本不会换行 */
-    .runtime-info span {
-        display: inline-block;
-        white-space: nowrap;
+    #runtime-hours, #runtime-minutes, #runtime-seconds {
+        font-size: 0.8rem;
+    }
+}
+
+/* 针对特定移动浏览器的修复 */
+@supports (-webkit-touch-callout: none) {
+    .days-count {
+        /* iOS Safari 特殊处理 */
+        background: none;
+        -webkit-text-fill-color: initial;
+        color: #10b981;
+    }
+}
+
+/* 针对某些Android浏览器的修复 */
+@media (max-width: 768px) and (hover: none) and (pointer: coarse) {
+    .days-count {
+        /* 触摸设备使用纯色 */
+        background: none;
+        -webkit-text-fill-color: initial;
+        color: #10b981;
     }
 }
 </style>
