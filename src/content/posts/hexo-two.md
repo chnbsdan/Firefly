@@ -3,7 +3,7 @@ title: "【Hexo blog NO.2】如何安装和美化|使用安知鱼主题进行个
 published: 2025-02-10
 pinned: true
 description: "安装和美化|使用安知鱼主题进行个性化配置。"
-tags: [hexo.教程,博客指南]
+tags: [hexo,教程,博客指南]
 category: "hexo"
 licenseName: "CC BY 4.0"
 author: "小史先森"
