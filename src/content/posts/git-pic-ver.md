@@ -3,7 +3,7 @@ title: "GitHub + PicList + Vercel 免费搭建高速图床"
 published: 2025-02-19
 pinned: false
 description: "用GitHub + PicList + Vercel 免费搭建高速图床，今天以笔记的形式记录搭建时的操作步骤并记录下来，此方法大多人都能用得上，重点是稳定且免费。"
-tags: [hexo,教程,博客指南]
+tags: [vercel,教程,博客指南,piclist]
 category: "项目搭建"
 licenseName: "CC BY 4.0"
 author: "小史先森"
