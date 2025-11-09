@@ -10,66 +10,80 @@
 </div>
 
 <script>
-// 确保DOM加载完成后执行
-document.addEventListener('DOMContentLoaded', function() {
-    // 设置网站开始运行的日期（修改为你的网站实际上线日期）
-    const startDate = new Date('2025-11-01'); // 修改为你的实际上线日期
+// 移动端兼容的运行时间计算
+(function() {
+    'use strict';
     
-    function updateRuntime() {
-        const now = new Date();
-        const diffTime = now - startDate;
-        
-        const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diffTime % (1000 * 60)) / 1000);
-        
-        // 安全地更新DOM元素
-        const daysElement = document.getElementById('runtime-days');
-        const hoursElement = document.getElementById('runtime-hours');
-        const minutesElement = document.getElementById('runtime-minutes');
-        const secondsElement = document.getElementById('runtime-seconds');
-        
-        if (daysElement) daysElement.textContent = days;
-        if (hoursElement) hoursElement.textContent = hours;
-        if (minutesElement) minutesElement.textContent = minutes;
-        if (secondsElement) secondsElement.textContent = seconds;
+    // 等待页面完全加载
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initRuntime);
+    } else {
+        // 如果DOM已经加载完成，立即执行
+        setTimeout(initRuntime, 100);
     }
     
-    // 立即更新一次
-    updateRuntime();
-    
-    // 然后每秒更新一次
-    setInterval(updateRuntime, 1000);
-});
-
-// 备用方案：如果DOMContentLoaded不触发，使用延时执行
-setTimeout(function() {
-    const startDate = new Date('2025-11-01');
-    
-    function updateRuntime() {
-        const now = new Date();
-        const diffTime = now - startDate;
+    function initRuntime() {
+        console.log('初始化运行时间计算');
         
-        const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diffTime % (1000 * 60)) / 1000);
+        // 设置网站开始运行的日期（修改为你的实际上线日期）
+        const startDate = new Date('2025-11-01');
+        console.log('开始日期:', startDate.toLocaleString());
         
-        const daysElement = document.getElementById('runtime-days');
-        const hoursElement = document.getElementById('runtime-hours');
-        const minutesElement = document.getElementById('runtime-minutes');
-        const secondsElement = document.getElementById('runtime-seconds');
+        let updateCount = 0;
         
-        if (daysElement) daysElement.textContent = days;
-        if (hoursElement) hoursElement.textContent = hours;
-        if (minutesElement) minutesElement.textContent = minutes;
-        if (secondsElement) secondsElement.textContent = seconds;
+        function updateRuntime() {
+            try {
+                updateCount++;
+                const now = new Date();
+                const diffTime = now - startDate;
+                
+                console.log(`第${updateCount}次更新，时间差:`, diffTime);
+                
+                if (diffTime > 0) {
+                    const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((diffTime % (1000 * 60)) / 1000);
+                    
+                    console.log('计算结果:', {days, hours, minutes, seconds});
+                    
+                    // 使用更安全的元素查找方式
+                    const elements = {
+                        days: document.getElementById('runtime-days'),
+                        hours: document.getElementById('runtime-hours'), 
+                        minutes: document.getElementById('runtime-minutes'),
+                        seconds: document.getElementById('runtime-seconds')
+                    };
+                    
+                    console.log('找到的元素:', elements);
+                    
+                    // 更新元素内容
+                    if (elements.days) elements.days.textContent = days;
+                    if (elements.hours) elements.hours.textContent = hours;
+                    if (elements.minutes) elements.minutes.textContent = minutes;
+                    if (elements.seconds) elements.seconds.textContent = seconds;
+                    
+                    // 如果第一次更新成功，记录日志
+                    if (updateCount === 1 && elements.days && elements.days.textContent !== '0') {
+                        console.log('✅ 运行时间计算成功！');
+                    }
+                } else {
+                    console.warn('时间差为负数，请检查开始日期设置');
+                }
+            } catch (error) {
+                console.error('运行时间计算错误:', error);
+            }
+        }
+        
+        // 多次尝试初始化，确保移动端能执行
+        setTimeout(updateRuntime, 50);
+        setTimeout(updateRuntime, 200);
+        setTimeout(updateRuntime, 500);
+        
+        // 然后每秒更新
+        setInterval(updateRuntime, 1000);
     }
-    
-    updateRuntime();
-    setInterval(updateRuntime, 1000);
-}, 1000);
+})();
 </script>
 
 <style>
@@ -82,23 +96,34 @@ setTimeout(function() {
 
 .runtime-info {
     margin-bottom: 0.5rem;
+    line-height: 1.5;
 }
 
 .days-count {
-    background: linear-gradient(135deg, #10b981, #22c55e);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #10b981;
     font-weight: bold;
     font-size: 1rem;
 }
 
+/* 移动端优化 */
 @media (max-width: 768px) {
     .runtime-section {
         font-size: 0.8rem;
+        padding: 0.3rem 0;
+    }
+    
+    .runtime-info {
+        margin-bottom: 0.3rem;
     }
     
     .days-count {
         font-size: 0.9rem;
+    }
+    
+    /* 确保移动端文本不会换行 */
+    .runtime-info span {
+        display: inline-block;
+        white-space: nowrap;
     }
 }
 </style>
