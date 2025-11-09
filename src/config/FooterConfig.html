@@ -1,87 +1,70 @@
-<style>
-/* 社交图标栏样式 */
-.social-icons-bar {
-    margin-top: 1rem;
-    padding-top: 1rem;
-}
-
-.social-icon {
-    color: var(--btn-content);
-    background: var(--btn-regular-bg);
-    border: 1px solid var(--line-divider);
-    position: relative;
-}
-
-.social-icon:hover {
-    background: var(--btn-regular-bg-hover);
-    color: var(--primary);
-    transform: translateY(-2px);
-}
-
-/* 自定义返回顶部图标样式 - 增强可见性 */
-.back-to-top {
-    background: var(--primary) !important;
-    border-color: var(--primary) !important;
-}
-
-.back-to-top img {
-    filter: brightness(0) invert(1); /* 让图标变成白色 */
-    width: 20px !important;
-    height: 20px !important;
-    transition: all 0.2s ease;
-}
-
-.back-to-top:hover img {
-    filter: brightness(0) invert(1) drop-shadow(0 0 2px rgba(255,255,255,0.8));
-    transform: scale(1.1);
-}
-</style>
-
 <!-- 社交图标栏 -->
-<div class="social-icons-bar flex justify-center items-center gap-4 mt-4 py-3 border-t border-black/10 dark:border-white/15 pt-4">
-    <!-- 左侧图标 -->
-    <a href="mailto:kekelove1688@gmail.com" class="social-icon btn-regular w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95" title="邮箱">
-        <svg width="1em" height="1em" class="text-[1.1rem]" data-icon="fa6-solid:envelope">
+<div class="social-icons-bar flex justify-center items-center gap-3 mt-4 py-3 border-t border-black/10 dark:border-white/15 pt-4">
+    <!-- 邮箱 -->
+    <a href="mailto:kekelove1688@gmail.com" class="social-icon w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 bg-blue-500 hover:bg-blue-600 text-white" title="邮箱">
+        <svg width="1.2em" height="1.2em" fill="currentColor">
             <use href="#ai:fa6-solid:envelope"></use>
         </svg>
     </a>
     
-    <a href="https://weibo.com/u/7866257468" class="social-icon btn-regular w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95" target="_blank" title="微博">
-        <svg width="1em" height="1em" class="text-[1.1rem]" data-icon="fa6-brands:weibo">
+    <!-- 微博 -->
+    <a href="https://weibo.com/u/7866257468" class="social-icon w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 bg-red-500 hover:bg-red-600 text-white" target="_blank" title="微博">
+        <svg width="1.2em" height="1.2em" fill="currentColor">
             <use href="#ai:fa6-brands:weibo"></use>
         </svg>
     </a>
     
-    <a href="https://www.facebook.com/profile.php?id=100091963634555" class="social-icon btn-regular w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95" target="_blank" title="Facebook">
-        <svg width="1em" height="1em" class="text-[1.1rem]" data-icon="fa6-brands:facebook-f">
+    <!-- Facebook -->
+    <a href="https://www.facebook.com/profile.php?id=100091963634555" class="social-icon w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 bg-blue-600 hover:bg-blue-700 text-white" target="_blank" title="Facebook">
+        <svg width="1.2em" height="1.2em" fill="currentColor">
             <use href="#ai:fa6-brands:facebook-f"></use>
         </svg>
     </a>
     
-    <!-- 中间的返回顶部按钮 - 使用自定义图标 -->
-    <a href="#" class="social-icon back-to-top btn-regular w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95" onclick="scrollToTop(); return false;" title="返回顶部">
-        <img src="https://img.hangdn.com/hexo/handan.ico" alt="返回顶部" class="w-5 h-5 object-contain" />
+    <!-- 返回顶部 - 使用自定义图标 -->
+    <a href="#" class="social-icon back-to-top w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 bg-green-500 hover:bg-green-600" onclick="scrollToTop(); return false;" title="返回顶部">
+        <img src="https://img.hangdn.com/hexo/handan.ico" alt="返回顶部" class="w-5 h-5 filter brightness-0 invert" />
     </a>
     
-    <!-- 右侧图标 -->
-    <a href="https://x.com/home/@chnbsdan" class="social-icon btn-regular w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95" target="_blank" title="X帐号">
-        <svg width="1em" height="1em" class="text-[1.1rem]" data-icon="fa6-brands:twitter">
+    <!-- X/Twitter -->
+    <a href="https://x.com/home/@chnbsdan" class="social-icon w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 bg-black hover:bg-gray-800 text-white" target="_blank" title="X帐号">
+        <svg width="1.2em" height="1.2em" fill="currentColor">
             <use href="#ai:fa6-brands:twitter"></use>
         </svg>
     </a>
     
-    <a href="https://space.bilibili.com/1913680621" class="social-icon btn-regular w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95" target="_blank" title="Bilibili">
-        <svg width="1em" height="1em" class="text-[1.1rem]" data-icon="fa6-brands:bilibili">
+    <!-- Bilibili -->
+    <a href="https://space.bilibili.com/1913680621" class="social-icon w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 bg-pink-500 hover:bg-pink-600 text-white" target="_blank" title="Bilibili">
+        <svg width="1.2em" height="1.2em" fill="currentColor">
             <use href="#ai:fa6-brands:bilibili"></use>
         </svg>
     </a>
     
-    <a href="https://t.me/ben_mesa" class="social-icon btn-regular w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95" target="_blank" title="Telegram">
-        <svg width="1em" height="1em" class="text-[1.1rem]" data-icon="fa6-brands:telegram">
+    <!-- Telegram -->
+    <a href="https://t.me/ben_mesa" class="social-icon w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 bg-blue-400 hover:bg-blue-500 text-white" target="_blank" title="Telegram">
+        <svg width="1.2em" height="1.2em" fill="currentColor">
             <use href="#ai:fa6-brands:telegram"></use>
         </svg>
     </a>
 </div>
+
+<style>
+/* 确保所有图标都清晰可见 */
+.social-icons-bar .social-icon svg {
+    filter: brightness(0) invert(1); /* 强制图标为白色 */
+}
+
+/* 返回顶部图标特殊处理 */
+.back-to-top img {
+    filter: brightness(0) invert(1); /* 确保自定义图标也是白色 */
+}
+
+/* 悬停效果 */
+.social-icon:hover {
+    transform: translateY(-2px) scale(1.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+</style>
 
 <script>
 // 返回顶部函数
