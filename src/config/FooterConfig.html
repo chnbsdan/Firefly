@@ -1,97 +1,168 @@
-<!-- 运行时间统计 -->
-<div class="runtime-section">
-    <div class="runtime-info">
-        本站已稳定运行 
-        <span id="runtime-days" class="days-count">0</span> 天 
-        <span id="runtime-hours">0</span> 小时 
-        <span id="runtime-minutes">0</span> 分钟 
-        <span id="runtime-seconds">0</span> 秒
-    </div>
+<!-- 站点统计信息 -->
+<div class="site-stats">
+  <span id="vercount_container_site_uv">
+    本站访客数：<span id="vercount_value_site_uv">Loading...</span> 人次
+  </span>
+  <span class="stats-separator">|</span>
+  <span id="vercount_container_site_pv">
+    本站总访问量：<span id="vercount_value_site_pv">Loading...</span> 次
+  </span>
+  <span class="stats-separator">|</span>
+  <span id="word-count-container">
+    本站总字数：<span id="word-count-value">7.4k</span> 字
+  </span>
+</div>
+
+<!-- Vercount统计脚本 -->
+<script defer src="https://events.vercount.one/js"></script>
+
+<!-- 站点运行时间 -->
+<div class="site-build-time">
+  <span>本站已正常运行<span id="runtime-counter"></span></span>
 </div>
 
 <script>
-// 运行时间计算
-function initializeRuntime() {
-    const startDate = new Date('2025-11-01T08:00:00');
-    
-    function updateRuntime() {
+(function(){
+  const buildtime = "2025-05-01T10:00:00"; // 修改为您的实际构建时间
+
+  if (buildtime) {
+    const runtimeCounter = document.getElementById('runtime-counter');
+    if (runtimeCounter) {
+      // 解析构建时间，处理多种格式
+      let buildTimeDate;
+      try {
+        if (typeof buildtime === 'string') {
+          // 日期字符串处理
+          const dateStr = buildtime.trim();
+          // 标准ISO格式: '2023-06-20T10:00:00' 或带时区的 '2023-06-20T10:00:00+08:00'
+          if (dateStr.includes('T')) {
+            // 确保正确解析带时区的ISO时间
+            buildTimeDate = new Date(dateStr);
+          } 
+          // 处理常见的中文日期格式: '2023-06-20 10:00:00'
+          else if (dateStr.includes(' ') && dateStr.includes(':')) {
+            // 分离日期和时间部分
+            const [datePart, timePart] = dateStr.split(' ');
+            if (datePart && timePart) {
+              const [year, month, day] = datePart.split('-');
+              const timeParts = timePart.split(':');
+              
+              const hour = timeParts[0] || '00';
+              const minute = timeParts[1] || '00';
+              const second = timeParts[2] || '00';
+              
+              // 使用 Date 构造函数 - 注意月份从0开始
+              buildTimeDate = new Date(
+                parseInt(year),
+                parseInt(month) - 1, 
+                parseInt(day),
+                parseInt(hour),
+                parseInt(minute),
+                parseInt(second)
+              );
+            }
+          }
+          // 仅有日期的格式: '2023-06-20'
+          else if (dateStr.includes('-')) {
+            const [year, month, day] = dateStr.split('-');
+            // 使用 Date 构造函数 - 注意月份从0开始
+            buildTimeDate = new Date(
+              parseInt(year),
+              parseInt(month) - 1, 
+              parseInt(day)
+            );
+          }
+          // 时间戳格式 (数字字符串)
+          else if (/^\d+$/.test(dateStr)) {
+            buildTimeDate = new Date(parseInt(dateStr));
+          }
+          // 尝试直接解析
+          else {
+            buildTimeDate = new Date(dateStr);
+          }
+        }
+        // Date 对象
+        else if (buildtime instanceof Date) {
+          buildTimeDate = buildtime;
+        } 
+        // 数字时间戳
+        else if (typeof buildtime === 'number') {
+          buildTimeDate = new Date(buildtime);
+        }
+        
+        // 确保构建时间是有效的日期且不是未来日期
+        if (!buildTimeDate || isNaN(buildTimeDate.getTime())) {
+          console.warn('网站构建时间格式无效，无法解析: ' + buildtime);
+          // 使用备用日期（当前日期减去1天，作为默认值）
+          const yesterday = new Date();
+          yesterday.setDate(yesterday.getDate() - 1);
+          buildTimeDate = yesterday;
+        } else {
+          // 防止使用未来日期，未来日期会导致计算出负值
+          const now = new Date();
+          if (buildTimeDate.getTime() > now.getTime()) {
+            console.warn('构建时间设置为未来，将使用当前时间: ' + buildtime);
+            buildTimeDate = new Date(now.getTime() - 86400000); // 使用一天前的时间
+          }
+        }
+      } catch (e) {
+        console.error('解析网站构建时间时发生错误:', e);
+        // 使用备用日期（当前日期减去1天，作为默认值）
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        buildTimeDate = yesterday;
+      }
+      
+      function updateRuntime() {
         const now = new Date();
-        const diffTime = Math.max(0, now - startDate);
+        const diff = now.getTime() - buildTimeDate.getTime();
         
-        const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diffTime % (1000 * 60)) / 1000);
+        // 计算天、时、分、秒
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
         
-        // 更新DOM元素
-        const daysElement = document.getElementById('runtime-days');
-        const hoursElement = document.getElementById('runtime-hours');
-        const minutesElement = document.getElementById('runtime-minutes');
-        const secondsElement = document.getElementById('runtime-seconds');
+        // 添加千分位分隔符并格式化显示
+        const formatNumber = (num) => {
+          if (num < 1000) return String(num);
+          return num.toLocaleString('zh-CN');
+        };
         
-        if (daysElement) daysElement.textContent = days;
-        if (hoursElement) hoursElement.textContent = hours;
-        if (minutesElement) minutesElement.textContent = minutes;
-        if (secondsElement) secondsElement.textContent = seconds;
+        // 格式化显示，添加带有特殊样式的文本
+        runtimeCounter.innerHTML = `${formatNumber(days)}<span class="time-unit">天</span>${hours}<span class="time-unit">时</span>${minutes}<span class="time-unit">分</span>${seconds}<span class="time-unit">秒</span>`;
+      }
+      
+      // 初次运行
+      updateRuntime();
+      
+      // 设置定时器，每秒更新一次
+      setInterval(updateRuntime, 1000);
     }
-    
-    // 初始化
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() {
-            updateRuntime();
-            setInterval(updateRuntime, 1000);
-        });
-    } else {
-        updateRuntime();
-        setInterval(updateRuntime, 1000);
-    }
-}
-
-// 启动运行时间计算
-initializeRuntime();
+  }
+})();
 </script>
-
 <style>
-.runtime-section {
-    text-align: center;
-    padding: 0.5rem 0;
-    color: #666;
-    font-size: 0.875rem;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+.site-stats {
+  margin: 10px 0;
+  font-size: 0.9rem;
+  color: #666;
 }
 
-.runtime-info {
-    margin-bottom: 0.5rem;
-    line-height: 1.5;
+.stats-separator {
+  margin: 0 8px;
+  color: #ccc;
 }
 
-/* 简单的颜色显示 */
-.days-count {
-    color: #10b981; /* 绿色 */
-    font-weight: bold;
-    font-size: 1rem;
+.site-build-time {
+  margin: 10px 0;
+  font-size: 0.9rem;
+  color: #666;
 }
 
-#runtime-hours, #runtime-minutes, #runtime-seconds {
-    color: #666;
-    font-weight: normal;
+.time-unit {
+  margin: 0 2px;
+  color: #999;
+  font-size: 0.8em;
 }
-
-/* 移动端优化 */
-@media (max-width: 768px) {
-    .runtime-section {
-        font-size: 0.8rem;
-        padding: 0.5rem 0.5rem;
-    }
-    
-    .days-count {
-        font-size: 0.9rem;
-        color: #10b981; /* 保持绿色 */
-    }
-    
-    #runtime-hours, #runtime-minutes, #runtime-seconds {
-        font-size: 0.8rem;
-        color: #666;
-    }
-}
-</style>
+</style>    
