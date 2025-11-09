@@ -6,7 +6,7 @@ description: "安装和美化|使用安知鱼主题进行个性化配置。"
 tags: [Vue.js, JavaScript, Frontend, API]
 category: "hexo"
 licenseName: "CC BY 4.0"
-author: "史生"
+author: "小史先森"
 sourceLink: "https://github.com/zhangsan/vue3-guide"
 draft: false
 date: 2025-11-08
