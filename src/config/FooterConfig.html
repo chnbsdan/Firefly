@@ -1,3 +1,56 @@
+<!-- 社交图标栏 -->
+<div class="social-icons-bar flex justify-center items-center gap-4 mt-4 py-3 border-t border-black/10 dark:border-white/15 pt-4">
+    <!-- 左侧图标 -->
+    <a href="mailto:kekelove1688@gmail.com" class="social-icon btn-regular w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95" title="邮箱">
+        <svg width="1em" height="1em" class="text-[1.1rem]" data-icon="fa6-solid:envelope">
+            <use href="#ai:fa6-solid:envelope"></use>
+        </svg>
+    </a>
+    
+    <a href="https://weibo.com/u/7866257468" class="social-icon btn-regular w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95" target="_blank" title="微博">
+        <svg width="1em" height="1em" class="text-[1.1rem]" data-icon="fa6-brands:weibo">
+            <use href="#ai:fa6-brands:weibo"></use>
+        </svg>
+    </a>
+    
+    <a href="https://www.facebook.com/profile.php?id=100091963634555" class="social-icon btn-regular w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95" target="_blank" title="Facebook">
+        <svg width="1em" height="1em" class="text-[1.1rem]" data-icon="fa6-brands:facebook-f">
+            <use href="#ai:fa6-brands:facebook-f"></use>
+        </svg>
+    </a>
+    
+    <!-- 中间的返回顶部按钮 - 使用自定义图标 -->
+    <a href="#" class="social-icon back-to-top btn-regular w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95" onclick="scrollToTop(); return false;" title="返回顶部">
+        <img src="https://img.hangdn.com/hexo/handan.ico" alt="返回顶部" class="w-5 h-5 object-contain" />
+    </a>
+    
+    <!-- 右侧图标 -->
+    <a href="https://x.com/home/@chnbsdan" class="social-icon btn-regular w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95" target="_blank" title="X帐号">
+        <svg width="1em" height="1em" class="text-[1.1rem]" data-icon="fa6-brands:twitter">
+            <use href="#ai:fa6-brands:twitter"></use>
+        </svg>
+    </a>
+    
+    <a href="https://space.bilibili.com/1913680621" class="social-icon btn-regular w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95" target="_blank" title="Bilibili">
+        <svg width="1em" height="1em" class="text-[1.1rem]" data-icon="fa6-brands:bilibili">
+            <use href="#ai:fa6-brands:bilibili"></use>
+        </svg>
+    </a>
+    
+    <a href="https://t.me/ben_mesa" class="social-icon btn-regular w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95" target="_blank" title="Telegram">
+        <svg width="1em" height="1em" class="text-[1.1rem]" data-icon="fa6-brands:telegram">
+            <use href="#ai:fa6-brands:telegram"></use>
+        </svg>
+    </a>
+</div>
+
+<script>
+// 返回顶部函数
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
 <div class="runtime-section">
     <div class="runtime-info">
         本站已稳定运行 <span id="runtime-days" class="days-count">0</span> 天 
