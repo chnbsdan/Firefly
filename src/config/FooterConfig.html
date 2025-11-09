@@ -1,3 +1,42 @@
+<style>
+/* 社交图标栏样式 */
+.social-icons-bar {
+    margin-top: 1rem;
+    padding-top: 1rem;
+}
+
+.social-icon {
+    color: var(--btn-content);
+    background: var(--btn-regular-bg);
+    border: 1px solid var(--line-divider);
+    position: relative;
+}
+
+.social-icon:hover {
+    background: var(--btn-regular-bg-hover);
+    color: var(--primary);
+    transform: translateY(-2px);
+}
+
+/* 自定义返回顶部图标样式 - 增强可见性 */
+.back-to-top {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+}
+
+.back-to-top img {
+    filter: brightness(0) invert(1); /* 让图标变成白色 */
+    width: 20px !important;
+    height: 20px !important;
+    transition: all 0.2s ease;
+}
+
+.back-to-top:hover img {
+    filter: brightness(0) invert(1) drop-shadow(0 0 2px rgba(255,255,255,0.8));
+    transform: scale(1.1);
+}
+</style>
+
 <!-- 社交图标栏 -->
 <div class="social-icons-bar flex justify-center items-center gap-4 mt-4 py-3 border-t border-black/10 dark:border-white/15 pt-4">
     <!-- 左侧图标 -->
