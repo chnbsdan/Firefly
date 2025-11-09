@@ -80,7 +80,7 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 
     // 歌词是否默认隐藏（当 lrcType 不为 0 时，可以通过此选项控制初始显示状态）
     // true=默认隐藏（用户可以通过歌词按钮手动显示）, false=默认显示
-    lrcHidden: true,
+    lrcHidden: false,
 
     // 播放列表是否默认折叠
     listFolded: false,
