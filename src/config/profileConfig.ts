@@ -15,5 +15,20 @@ export const profileConfig: ProfileConfig = {
       icon: "fa6-brands:github",
       url: "https://github.com/chnbsdan",
     },
+    {
+      name: "微博", 
+      icon: "fa6-brands:weibo",
+      url: "https://weibo.com/u/7866257468",
+    },
+    {
+      name: "Telegram",
+      icon: "fa6-brands:telegram",
+      url: "https://t.me/ben_mesa",
+    },
+    {
+      name: "X/Twitter",
+      icon: "fa6-brands:twitter",
+      url: "https://x.com/home/@chnbsdan",
+    },
   ],
 };
