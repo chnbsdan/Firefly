@@ -141,6 +141,34 @@
     }
   }
 })();
+
+// src/layouts/Layout.astro
+// 1. 导入内容集合工具函数和你的站点配置
+import { getCollection } from 'astro:content';
+// 假设你有一个获取所有文章的辅助函数，或者直接使用 getCollection
+// 如果你的博客集合名为 'blog'
+const allPosts = await getCollection('blog');
+// 初始化总字数
+let totalWordCount = 0;
+
+// 2. 遍历所有文章，累加字数
+// 这里假设每篇文章的 Frontmatter 中有一个 'wordCount' 字段
+for (const post of allPosts) {
+  // 确保 post.data.wordCount 存在，如果不存在可以给个默认值0，或者尝试从正文计算
+  totalWordCount += post.data.wordCount || 0;
+}
+
+// 3. 格式化总字数
+const formatWordCount = (count) => {
+  if (count >= 10000) {
+    return (count / 10000).toFixed(1) + 'w';
+  } else if (count >= 1000) {
+    return (count / 1000).toFixed(1) + 'k';
+  }
+  return count.toString();
+};
+const formattedTotal = formatWordCount(totalWordCount);
+  
 </script>
 <style>
 .site-stats {
