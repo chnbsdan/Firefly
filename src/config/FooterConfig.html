@@ -1,4 +1,73 @@
+<!-- 社交图标栏 -->
+<div class="social-icons-bar flex justify-center items-center gap-6 mt-4 py-3 border-t border-black/10 dark:border-white/15 pt-4">
+    <!-- 邮箱 -->
+    <a href="mailto:kekelove1688@gmail.com" class="social-icon w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 bg-green-400 text-white" title="邮箱">
+        <svg width="1.2em" height="1.2em">
+            <use href="#ai:mdi:email"></use>
+        </svg>
+    </a>
+    
+    <!-- 微博 -->
+    <a href="https://weibo.com/u/7866257468" class="social-icon w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 bg-green-400 text-white" target="_blank" title="微博">
+        <svg width="1.2em" height="1.2em">
+            <use href="#ai:fa6-solid:share-nodes"></use>
+        </svg>
+    </a>
+    
+    <!-- Facebook -->
+    <a href="https://www.facebook.com/profile.php?id=100091963634555" class="social-icon w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 bg-green-400 text-white" target="_blank" title="Facebook">
+        <svg width="1.2em" height="1.2em">
+            <use href="#ai:fa6-brands:facebook-f"></use>
+        </svg>
+    </a>
+    
+    <!-- 返回顶部 -->
+    <a href="#" class="social-icon back-to-top w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 bg-green-400" onclick="scrollToTop(); return false;" title="返回顶部">
+        <img src="https://img.hangdn.com/hexo/handan.ico" alt="返回顶部" class="w-full h-full object-contain p-2" />
+    </a>
+    
+    <!-- X/Twitter -->
+    <a href="https://x.com/home/@chnbsdan" class="social-icon w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 bg-green-400 text-white" target="_blank" title="X帐号">
+        <svg width="1.2em" height="1.2em">
+            <use href="#ai:fa6-brands:twitter"></use>
+        </svg>
+    </a>
+    
+    <!-- Bilibili -->
+    <a href="https://space.bilibili.com/1913680621" class="social-icon w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 bg-green-400 text-white" target="_blank" title="Bilibili">
+        <svg width="1.2em" height="1.2em">
+            <use href="#ai:fa6-brands:bilibili"></use>
+        </svg>
+    </a>
+    
+    <!-- Telegram -->
+    <a href="https://t.me/ben_mesa" class="social-icon w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 bg-green-400 text-white" target="_blank" title="Telegram">
+        <svg width="1.2em" height="1.2em">
+            <use href="#ai:fa6-brands:telegram"></use>
+        </svg>
+    </a>
+</div>
 
+<style>
+/* 强制所有图标为白色 */
+.social-icons-bar .social-icon svg {
+    color: white !important;
+    fill: currentColor !important;
+}
+
+/* 悬停效果 */
+.social-icon:hover {
+    transform: translateY(-2px) scale(1.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    background-color: #16a34a !important;
+}
+</style>
+
+<script>
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
 
 <div class="runtime-section">
     <div class="runtime-info">
