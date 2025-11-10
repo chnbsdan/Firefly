@@ -114,7 +114,9 @@ type: "categories"
 - post.md：新建博文模版
 - page.md：新建标签页模版
 
-**post.md**模版，仅供参考
+<details>
+<summary>**post.md**模版，仅供参考（点击展开）</summary>
+
 ```YML
 ---
 title: {{ title }} #【必需】页面标题
@@ -168,9 +170,12 @@ background: "#fff" #【可选】文章主色，必须是16进制颜色且有6位
 
 
 ```
+</details>
 
 
-**page.md**模版，仅供参考
+<details>
+<summary>**p**page.md**模版，仅供参考（点击展开）</summary>
+
 
 ```YML
 ---
@@ -191,7 +196,7 @@ top_single_background: #【可选】部分页面的顶部模块背景图片
 ---
 ```
 ---
-
+</details>
 
 # 更多功能
 
