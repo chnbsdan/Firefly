@@ -35,12 +35,6 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     <!-- 音乐胶囊 -->
     <div id="music-capsule" class="music-capsule" title="点击展开播放器">
       <img id="capsule-cover" src="https://p2.music.126.net/4HGEnXVexEfF2M4WdDdfrQ==/109951166354363385.jpg" alt="专辑封面" />
-      <!-- 黑胶唱片臂 -->
-      <div class="vinyl-arm">
-        <div class="arm-base"></div>
-        <div class="arm-rod"></div>
-        <div class="arm-head"></div>
-      </div>
     </div>
 
     <!-- 独立歌词显示 -->
@@ -178,57 +172,44 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       }
     }
 
-    // 初始化右键菜单 - 修复位置计算
+    // 初始化右键菜单
     function initRightClickMenu() {
       const rightMenu = document.getElementById('right-menu');
       if (!rightMenu) return;
 
-      // 显示菜单 - 修复位置计算
+      // 显示菜单
       function showMenuAt(clientX, clientY) {
         rightMenu.style.display = 'block';
         rightMenu.classList.remove('show');
         
-        // 给浏览器时间计算菜单尺寸
         setTimeout(() => {
           const menuRect = rightMenu.getBoundingClientRect();
           const menuWidth = menuRect.width;
           const menuHeight = menuRect.height;
           
-          // 计算最佳显示位置
           let left = clientX;
           let top = clientY;
           
-          // 水平方向：如果右边空间不够，就显示在左边
+          // 水平方向调整
           if (left + menuWidth > window.innerWidth - 10) {
             left = clientX - menuWidth;
           }
           
-          // 垂直方向：如果下边空间不够，就显示在上边
+          // 垂直方向调整
           if (top + menuHeight > window.innerHeight - 10) {
             top = clientY - menuHeight;
           }
           
-          // 确保不会超出屏幕边界
+          // 确保不超出边界
           left = Math.max(10, Math.min(left, window.innerWidth - menuWidth - 10));
           top = Math.max(10, Math.min(top, window.innerHeight - menuHeight - 10));
           
           rightMenu.style.left = left + 'px';
           rightMenu.style.top = top + 'px';
           
-          // 计算箭头位置 - 根据菜单位置动态调整箭头方向
+          // 箭头位置
           const arrowLeft = Math.max(15, Math.min(clientX - left, menuWidth - 15));
           rightMenu.style.setProperty('--arrow-left', arrowLeft + 'px');
-          
-          // 根据菜单位置设置箭头方向
-          if (clientY + menuHeight > window.innerHeight - 10) {
-            // 菜单在上方显示，箭头朝下
-            rightMenu.style.setProperty('--arrow-top', '100%');
-            rightMenu.style.setProperty('--arrow-transform', 'rotate(180deg)');
-          } else {
-            // 菜单在下方显示，箭头朝上
-            rightMenu.style.setProperty('--arrow-top', '-6px');
-            rightMenu.style.setProperty('--arrow-transform', 'rotate(0deg)');
-          }
           
           rightMenu.classList.add('show');
         }, 10);
@@ -243,14 +224,14 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       }
 
       // 绑定菜单事件
-      document.getElementById('menu-play')?.addEventListener('click', () => { togglePlay(); hideRightMenuImmediate(); });
-      document.getElementById('menu-prev')?.addEventListener('click', () => { prevSong(); hideRightMenuImmediate(); });
-      document.getElementById('menu-next')?.addEventListener('click', () => { nextSong(); hideRightMenuImmediate(); });
-      document.getElementById('menu-volup')?.addEventListener('click', () => { volumeUp(); hideRightMenuImmediate(); });
-      document.getElementById('menu-voldown')?.addEventListener('click', () => { volumeDown(); hideRightMenuImmediate(); });
-      document.getElementById('menu-lyrics')?.addEventListener('click', () => { toggleLyricsVisibility(); hideRightMenuImmediate(); });
-      document.getElementById('menu-support')?.addEventListener('click', () => { window.open('https://1356666.xyz','_blank'); hideRightMenuImmediate(); });
-      document.getElementById('menu-fullscreen')?.addEventListener('click', () => {
+      document.getElementById('menu-play').addEventListener('click', () => { togglePlay(); hideRightMenuImmediate(); });
+      document.getElementById('menu-prev').addEventListener('click', () => { prevSong(); hideRightMenuImmediate(); });
+      document.getElementById('menu-next').addEventListener('click', () => { nextSong(); hideRightMenuImmediate(); });
+      document.getElementById('menu-volup').addEventListener('click', () => { volumeUp(); hideRightMenuImmediate(); });
+      document.getElementById('menu-voldown').addEventListener('click', () => { volumeDown(); hideRightMenuImmediate(); });
+      document.getElementById('menu-lyrics').addEventListener('click', () => { toggleLyricsVisibility(); hideRightMenuImmediate(); });
+      document.getElementById('menu-support').addEventListener('click', () => { window.open('https://1356666.xyz','_blank'); hideRightMenuImmediate(); });
+      document.getElementById('menu-fullscreen').addEventListener('click', () => {
         if (!document.fullscreenElement) {
           document.documentElement.requestFullscreen().catch(()=>{});
         } else {
@@ -258,14 +239,14 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
         }
         hideRightMenuImmediate();
       });
-      document.getElementById('menu-close')?.addEventListener('click', () => { 
+      document.getElementById('menu-close').addEventListener('click', () => { 
         const aplayer = getAPlayerInstance();
         if (aplayer) aplayer.pause();
         togglePlayerVisibility();
         hideRightMenuImmediate();
       });
 
-      // 全局右键事件 - 在胶囊和播放器上显示菜单
+      // 全局右键事件
       document.addEventListener('contextmenu', function(e) {
         const target = e.target;
         const isOnCapsule = target.closest('#music-capsule');
@@ -342,7 +323,7 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       }
     }
 
-    // 初始化播放器监听
+    // 初始化播放器监听 - 修复歌词显示
     function initPlayerListener() {
       const aplayer = getAPlayerInstance();
       if (!aplayer) {
@@ -388,7 +369,7 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
         }
       }
 
-      // 更新歌词显示
+      // 更新歌词显示 - 修复歌词获取逻辑
       function updateLyrics(current, next) {
         if (!currentLineEl || !nextLineEl || !lyricsVisible) return;
         
@@ -402,12 +383,24 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
         }
       }
 
-      // 监听歌词变化
+      // 监听歌词变化 - 修复歌词监听
       function startLyricsListener() {
-        const interval = setInterval(() => {
-          if (!lyricsVisible) return;
+        setInterval(() => {
+          if (!lyricsVisible) {
+            updateLyrics('', '');
+            return;
+          }
           
-          const lrcContainer = document.querySelector('.aplayer-lrc');
+          // 尝试从多个位置获取歌词
+          let lrcContainer = document.querySelector('.aplayer-lrc');
+          if (!lrcContainer) {
+            // 如果找不到歌词容器，尝试从播放器内部查找
+            const aplayerEl = document.querySelector('.aplayer');
+            if (aplayerEl) {
+              lrcContainer = aplayerEl.querySelector('.aplayer-lrc');
+            }
+          }
+          
           if (!lrcContainer) {
             updateLyrics('', '');
             return;
@@ -416,13 +409,17 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
           const currentLrc = lrcContainer.querySelector('p.aplayer-lrc-current');
           const allLrcLines = lrcContainer.querySelectorAll('p');
           
-          if (currentLrc && currentLrc.textContent.trim()) {
+          if (currentLrc && currentLrc.textContent && currentLrc.textContent.trim()) {
             const currentText = currentLrc.textContent.trim();
             let nextText = '';
             
+            // 找到下一句歌词
             for (let i = 0; i < allLrcLines.length; i++) {
               if (allLrcLines[i] === currentLrc && i < allLrcLines.length - 1) {
-                nextText = allLrcLines[i + 1].textContent.trim();
+                const nextLrc = allLrcLines[i + 1];
+                if (nextLrc && nextLrc.textContent) {
+                  nextText = nextLrc.textContent.trim();
+                }
                 break;
               }
             }
@@ -435,7 +432,7 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
             updateLyrics('', '');
             currentLyric = '';
           }
-        }, 100);
+        }, 200); // 降低检查频率
       }
 
       // 开始监听歌词
@@ -1048,7 +1045,7 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     min-height: 18px;
   }
 
-  /* 右键菜单 - 修复位置计算 */
+  /* 右键菜单 */
   #right-menu{
     position:fixed;
     display:none;
@@ -1063,10 +1060,7 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     padding:6px 0;
     opacity:0;
     transform:scale(.98);
-    transition:opacity .12s,transform .12s;
-    /* 动态箭头位置 */
-    --arrow-top: -6px;
-    --arrow-transform: rotate(0deg);
+    transition:opacity .12s,transform .12s
   }
   #right-menu.show{
     display:flex;
@@ -1087,79 +1081,15 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     color:#f97316;
     border-radius:6px
   }
-  /* 动态箭头 */
   #right-menu::after{
     content:"";
     position:absolute;
-    top: var(--arrow-top);
+    top:-8px;
     left:var(--arrow-left,24px);
-    transform:translateX(-50%) var(--arrow-transform);
+    transform:translateX(-50%);
     border-left:8px solid transparent;
     border-right:8px solid transparent;
     border-bottom:8px solid rgba(255,255,255,0.12)
-  }
-
-  /* 黑胶唱片臂 */
-  .vinyl-arm {
-    position: absolute;
-    top: -30px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90px;
-    height: 70px;
-    z-index: 10;
-    pointer-events: none;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .music-capsule.playing .vinyl-arm {
-    opacity: 1;
-  }
-
-  .arm-base {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 16px;
-    height: 25px;
-    background: linear-gradient(135deg, #8b8b8b, #4a4a4a, #8b8b8b);
-    border-radius: 4px 4px 2px 2px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-    border: 1px solid #5a5a5a;
-  }
-
-  .arm-rod {
-    position: absolute;
-    top: 25px;
-    left: 50%;
-    width: 3px;
-    height: 45px;
-    background: linear-gradient(to bottom, #c0c0c0, #808080, #505050);
-    transform-origin: top center;
-    transform: translateX(-50%) rotate(-25deg);
-    transition: transform 0.8s cubic-bezier(0.34, 1.2, 0.64, 1);
-    border-radius: 1px;
-  }
-
-  .music-capsule.playing .vinyl-arm .arm-rod {
-    transform: translateX(-50%) rotate(25deg);
-  }
-
-  .arm-head {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 12px;
-    height: 12px;
-    background: linear-gradient(135deg, #333, #000);
-    border-radius: 50%;
-    transform: translateX(-50%);
-    box-shadow: 0 1px 6px rgba(0,0,0,0.6), 
-          inset 0 1px 1px rgba(255,255,255,0.2);
-    border: 1px solid #000;
   }
 
   /* 响应式调整 */
