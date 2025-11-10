@@ -32,36 +32,14 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     <link rel="stylesheet" href={aplayerCssPath} />
     <link rel="stylesheet" href={aplayerCustomCssPath} />
 
-    <!-- 音乐控制面板（右下角整合） -->
-    <div id="music-control-panel" class="music-control-panel">
-      <!-- 音乐胶囊 -->
-      <div id="music-capsule" class="music-capsule" title="点击展开播放器">
-        <img id="capsule-cover" src="https://p2.music.126.net/4HGEnXVexEfF2M4WdDdfrQ==/109951166354363385.jpg" alt="专辑封面" />
-        <!-- 黑胶唱片臂 -->
-        <div class="vinyl-arm">
-          <div class="arm-base"></div>
-          <div class="arm-rod"></div>
-          <div class="arm-head"></div>
-        </div>
-      </div>
-
-      <!-- 控制按钮组 -->
-      <div class="control-buttons">
-        <button class="control-btn" id="control-prev" title="上一首">
-          <span class="iconify" data-icon="mdi:skip-previous"></span>
-        </button>
-        <button class="control-btn" id="control-play" title="播放/暂停">
-          <span class="iconify" data-icon="mdi:play"></span>
-        </button>
-        <button class="control-btn" id="control-next" title="下一首">
-          <span class="iconify" data-icon="mdi:skip-next"></span>
-        </button>
-        <button class="control-btn" id="control-lyrics" title="显示/隐藏歌词">
-          <span class="iconify" data-icon="mdi:format-text"></span>
-        </button>
-        <button class="control-btn" id="control-menu" title="右键菜单">
-          <span class="iconify" data-icon="mdi:dots-vertical"></span>
-        </button>
+    <!-- 音乐胶囊 -->
+    <div id="music-capsule" class="music-capsule" title="点击展开播放器">
+      <img id="capsule-cover" src="https://p2.music.126.net/4HGEnXVexEfF2M4WdDdfrQ==/109951166354363385.jpg" alt="专辑封面" />
+      <!-- 黑胶唱片臂 -->
+      <div class="vinyl-arm">
+        <div class="arm-base"></div>
+        <div class="arm-rod"></div>
+        <div class="arm-head"></div>
       </div>
     </div>
 
@@ -71,7 +49,7 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       <div class="next-line"></div>
     </div>
 
-    <!-- 右键菜单（保持原有样式和功能） -->
+    <!-- 右键菜单 -->
     <ul id="right-menu" role="menu" aria-hidden="true">
       <li id="menu-play">▶ 播放 / 暂停</li>
       <li id="menu-prev">⏮ 上一首</li>
@@ -151,46 +129,24 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
 
     // 初始化所有功能
     function initAllFeatures() {
-      initControlPanel();
+      initCapsule();
       initRightClickMenu();
       initPlayerListener();
     }
 
-    // 初始化控制面板
-    function initControlPanel() {
+    // 初始化胶囊
+    function initCapsule() {
       const capsule = document.getElementById('music-capsule');
-      const controlPlay = document.getElementById('control-play');
-      const controlPrev = document.getElementById('control-prev');
-      const controlNext = document.getElementById('control-next');
-      const controlLyrics = document.getElementById('control-lyrics');
-      const controlMenu = document.getElementById('control-menu');
-
       if (!capsule) return;
 
       // 胶囊点击 - 切换播放器显示
       capsule.addEventListener('click', togglePlayerVisibility);
-
-      // 控制按钮事件
-      controlPlay?.addEventListener('click', togglePlay);
-      controlPrev?.addEventListener('click', prevSong);
-      controlNext?.addEventListener('click', nextSong);
-      controlLyrics?.addEventListener('click', toggleLyricsVisibility);
-      controlMenu?.addEventListener('click', showControlMenu);
 
       // 初始隐藏播放器
       const container = document.getElementById('aplayer-container');
       if (container) {
         container.style.display = 'none';
       }
-    }
-
-    // 显示控制菜单（在按钮位置）
-    function showControlMenu() {
-      const controlMenu = document.getElementById('control-menu');
-      if (!controlMenu) return;
-
-      const rect = controlMenu.getBoundingClientRect();
-      showMenuAt(rect.right - 100, rect.top - 10);
     }
 
     // 切换播放器显示
@@ -213,43 +169,77 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     function updateLyricsDisplay() {
       const floatingLyrics = document.getElementById('floating-lyrics');
       if (floatingLyrics) {
-        floatingLyrics.style.display = lyricsVisible ? 'block' : 'none';
+        if (lyricsVisible) {
+          floatingLyrics.style.display = 'block';
+        } else {
+          floatingLyrics.style.display = 'none';
+          floatingLyrics.classList.remove('show');
+        }
       }
     }
 
-    // 初始化右键菜单（保持原有功能）
+    // 初始化右键菜单 - 修复位置计算
     function initRightClickMenu() {
       const rightMenu = document.getElementById('right-menu');
       if (!rightMenu) return;
 
-      // 显示菜单
-      window.showMenuAt = function(clientX, clientY) {
+      // 显示菜单 - 修复位置计算
+      function showMenuAt(clientX, clientY) {
         rightMenu.style.display = 'block';
         rightMenu.classList.remove('show');
         
-        requestAnimationFrame(() => {
-          const menuWidth = rightMenu.offsetWidth || 220;
-          const menuHeight = rightMenu.offsetHeight || 280;
+        // 给浏览器时间计算菜单尺寸
+        setTimeout(() => {
+          const menuRect = rightMenu.getBoundingClientRect();
+          const menuWidth = menuRect.width;
+          const menuHeight = menuRect.height;
           
-          let left = Math.round(clientX - menuWidth/2);
-          left = Math.max(8, Math.min(left, window.innerWidth - menuWidth - 8));
-          let top = clientY - menuHeight - 12;
-          if (top < 8) top = clientY + 12;
-          if (top + menuHeight > window.innerHeight - 8) top = Math.max(8, window.innerHeight - menuHeight - 8);
+          // 计算最佳显示位置
+          let left = clientX;
+          let top = clientY;
+          
+          // 水平方向：如果右边空间不够，就显示在左边
+          if (left + menuWidth > window.innerWidth - 10) {
+            left = clientX - menuWidth;
+          }
+          
+          // 垂直方向：如果下边空间不够，就显示在上边
+          if (top + menuHeight > window.innerHeight - 10) {
+            top = clientY - menuHeight;
+          }
+          
+          // 确保不会超出屏幕边界
+          left = Math.max(10, Math.min(left, window.innerWidth - menuWidth - 10));
+          top = Math.max(10, Math.min(top, window.innerHeight - menuHeight - 10));
           
           rightMenu.style.left = left + 'px';
           rightMenu.style.top = top + 'px';
           
-          const arrowLeft = Math.max(12, Math.min(clientX - left, menuWidth - 12));
+          // 计算箭头位置 - 根据菜单位置动态调整箭头方向
+          const arrowLeft = Math.max(15, Math.min(clientX - left, menuWidth - 15));
           rightMenu.style.setProperty('--arrow-left', arrowLeft + 'px');
+          
+          // 根据菜单位置设置箭头方向
+          if (clientY + menuHeight > window.innerHeight - 10) {
+            // 菜单在上方显示，箭头朝下
+            rightMenu.style.setProperty('--arrow-top', '100%');
+            rightMenu.style.setProperty('--arrow-transform', 'rotate(180deg)');
+          } else {
+            // 菜单在下方显示，箭头朝上
+            rightMenu.style.setProperty('--arrow-top', '-6px');
+            rightMenu.style.setProperty('--arrow-transform', 'rotate(0deg)');
+          }
+          
           rightMenu.classList.add('show');
-        });
+        }, 10);
       }
 
       // 隐藏菜单
-      window.hideRightMenuImmediate = function() {
+      function hideRightMenuImmediate() {
         rightMenu.classList.remove('show');
-        rightMenu.style.display = 'none';
+        setTimeout(() => {
+          rightMenu.style.display = 'none';
+        }, 200);
       }
 
       // 绑定菜单事件
@@ -275,23 +265,35 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
         hideRightMenuImmediate();
       });
 
-      // 全局右键事件
+      // 全局右键事件 - 在胶囊和播放器上显示菜单
       document.addEventListener('contextmenu', function(e) {
         const target = e.target;
-        const isOnControlPanel = target.closest('#music-control-panel');
+        const isOnCapsule = target.closest('#music-capsule');
         const isOnPlayer = target.closest('.aplayer') || target.closest('#aplayer-container');
         
-        if (isOnControlPanel || isOnPlayer) {
+        if (isOnCapsule || isOnPlayer) {
           e.preventDefault();
+          e.stopPropagation();
           showMenuAt(e.clientX, e.clientY);
         }
       });
 
+      // 点击其他地方隐藏菜单
       document.addEventListener('click', function(e) {
         if (!rightMenu.contains(e.target)) {
           hideRightMenuImmediate();
         }
       });
+
+      // ESC键隐藏菜单
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          hideRightMenuImmediate();
+        }
+      });
+
+      // 窗口大小变化时隐藏菜单
+      window.addEventListener('resize', hideRightMenuImmediate);
     }
 
     // 播放控制函数
@@ -311,7 +313,6 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       const aplayer = getAPlayerInstance();
       if (aplayer) {
         aplayer.toggle();
-        updatePlayButtonState();
       }
     }
 
@@ -341,18 +342,6 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       }
     }
 
-    function updatePlayButtonState() {
-      const controlPlay = document.getElementById('control-play');
-      const aplayer = getAPlayerInstance();
-      if (controlPlay && aplayer) {
-        const isPlaying = !aplayer.paused;
-        const icon = controlPlay.querySelector('.iconify');
-        if (icon) {
-          icon.setAttribute('data-icon', isPlaying ? 'mdi:pause' : 'mdi:play');
-        }
-      }
-    }
-
     // 初始化播放器监听
     function initPlayerListener() {
       const aplayer = getAPlayerInstance();
@@ -373,18 +362,15 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       aplayer.on('play', function() {
         if (capsule) capsule.classList.add('playing');
         updateCover();
-        updatePlayButtonState();
       });
       
       aplayer.on('pause', function() {
         if (capsule) capsule.classList.remove('playing');
-        updatePlayButtonState();
       });
       
       aplayer.on('ended', function() {
         if (capsule) capsule.classList.remove('playing');
         updateLyrics('', '');
-        updatePlayButtonState();
       });
       
       aplayer.on('loadeddata', updateCover);
@@ -418,11 +404,14 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
 
       // 监听歌词变化
       function startLyricsListener() {
-        setInterval(() => {
+        const interval = setInterval(() => {
           if (!lyricsVisible) return;
           
           const lrcContainer = document.querySelector('.aplayer-lrc');
-          if (!lrcContainer) return;
+          if (!lrcContainer) {
+            updateLyrics('', '');
+            return;
+          }
           
           const currentLrc = lrcContainer.querySelector('p.aplayer-lrc-current');
           const allLrcLines = lrcContainer.querySelectorAll('p');
@@ -972,46 +961,31 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     display: none !important;
   }
 
-  /* 新增：音乐控制面板（右下角整合） */
-  .music-control-panel {
-    position: fixed;
-    right: 20px;
-    bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    z-index: 30000;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 50px;
-    padding: 10px 15px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  }
-
   /* 音乐胶囊样式 */
   .music-capsule {
-    width: 50px;
-    height: 50px;
+    position: fixed;
+    left: 22px;
+    bottom: 96px;
+    width: 72px;
+    height: 72px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    z-index: 30000;
     background: radial-gradient(circle at 30% 30%, #00c3ff, #0061ff);
-    box-shadow: 0 4px 20px rgba(0, 180, 255, 0.3);
+    box-shadow: 0 8px 28px rgba(0, 180, 255, 0.12);
     transition: all 0.3s ease;
-    position: relative;
   }
 
   .music-capsule:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
   }
 
   .music-capsule img {
-    width: 70%;
-    height: 70%;
+    width: 64%;
+    height: 64%;
     border-radius: 50%;
     object-fit: cover;
     transition: transform 0.3s;
@@ -1019,7 +993,7 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
 
   .music-capsule.playing {
     background: radial-gradient(circle at 30% 30%, #ff9500, #ff5e00);
-    box-shadow: 0 4px 20px rgba(255, 140, 0, 0.4);
+    box-shadow: 0 8px 28px rgba(255, 140, 0, 0.28);
   }
 
   .music-capsule.playing img {
@@ -1031,56 +1005,23 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     to { transform: rotate(360deg) }
   }
 
-  /* 控制按钮组 */
-  .control-buttons {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .control-btn {
-    width: 40px;
-    height: 40px;
-    border: none;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    color: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    font-size: 18px;
-  }
-
-  .control-btn:hover {
-    background: rgba(255, 255, 255, 0.25);
-    transform: scale(1.1);
-  }
-
-  .control-btn .iconify {
-    width: 20px;
-    height: 20px;
-  }
-
   /* 独立歌词显示 */
   .floating-lyrics {
     position: fixed;
-    right: 200px;
-    bottom: 30px;
-    text-align: right;
+    left: 100px;
+    bottom: 50px;
+    text-align: left;
     z-index: 99999;
     color: #ff8c00;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
     text-shadow: 2px 2px 12px rgba(0, 0, 0, 0.9);
     background: rgba(255, 255, 255, 0.10);
-    padding: 12px 18px;
+    padding: 15px 20px;
     border-radius: 12px;
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    max-width: 350px;
+    max-width: 400px;
     opacity: 0;
     transition: opacity 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1094,20 +1035,20 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
 
   .floating-lyrics .current-line {
     color: #ff4500;
-    font-size: 20px;
-    margin-bottom: 6px;
+    font-size: 30px;
+    margin-bottom: 8px;
     font-weight: bold;
-    min-height: 20px;
+    min-height: 24px;
   }
 
   .floating-lyrics .next-line {
     color: #ff8c00;
-    font-size: 12px;
+    font-size: 14px;
     opacity: 0.8;
-    min-height: 16px;
+    min-height: 18px;
   }
 
-  /* 右键菜单（保持原有样式） */
+  /* 右键菜单 - 修复位置计算 */
   #right-menu{
     position:fixed;
     display:none;
@@ -1122,7 +1063,10 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     padding:6px 0;
     opacity:0;
     transform:scale(.98);
-    transition:opacity .12s,transform .12s
+    transition:opacity .12s,transform .12s;
+    /* 动态箭头位置 */
+    --arrow-top: -6px;
+    --arrow-transform: rotate(0deg);
   }
   #right-menu.show{
     display:flex;
@@ -1143,12 +1087,13 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     color:#f97316;
     border-radius:6px
   }
+  /* 动态箭头 */
   #right-menu::after{
     content:"";
     position:absolute;
-    top:-8px;
+    top: var(--arrow-top);
     left:var(--arrow-left,24px);
-    transform:translateX(-50%);
+    transform:translateX(-50%) var(--arrow-transform);
     border-left:8px solid transparent;
     border-right:8px solid transparent;
     border-bottom:8px solid rgba(255,255,255,0.12)
@@ -1157,11 +1102,11 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   /* 黑胶唱片臂 */
   .vinyl-arm {
     position: absolute;
-    top: -25px;
+    top: -30px;
     left: 50%;
     transform: translateX(-50%);
-    width: 70px;
-    height: 55px;
+    width: 90px;
+    height: 70px;
     z-index: 10;
     pointer-events: none;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
@@ -1178,20 +1123,20 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 12px;
-    height: 20px;
+    width: 16px;
+    height: 25px;
     background: linear-gradient(135deg, #8b8b8b, #4a4a4a, #8b8b8b);
-    border-radius: 3px 3px 2px 2px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    border-radius: 4px 4px 2px 2px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
     border: 1px solid #5a5a5a;
   }
 
   .arm-rod {
     position: absolute;
-    top: 20px;
+    top: 25px;
     left: 50%;
-    width: 2px;
-    height: 35px;
+    width: 3px;
+    height: 45px;
     background: linear-gradient(to bottom, #c0c0c0, #808080, #505050);
     transform-origin: top center;
     transform: translateX(-50%) rotate(-25deg);
@@ -1207,50 +1152,38 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     position: absolute;
     bottom: 0;
     left: 50%;
-    width: 8px;
-    height: 8px;
+    width: 12px;
+    height: 12px;
     background: linear-gradient(135deg, #333, #000);
     border-radius: 50%;
     transform: translateX(-50%);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.6), 
+    box-shadow: 0 1px 6px rgba(0,0,0,0.6), 
           inset 0 1px 1px rgba(255,255,255,0.2);
     border: 1px solid #000;
   }
 
   /* 响应式调整 */
   @media (max-width: 768px) {
-    .music-control-panel {
-      right: 10px;
-      bottom: 10px;
-      gap: 10px;
-      padding: 8px 12px;
-    }
-    
     .music-capsule {
-      width: 45px;
-      height: 45px;
-    }
-    
-    .control-btn {
-      width: 35px;
-      height: 35px;
-      font-size: 16px;
+      left: 18px;
+      bottom: 22px;
+      width: 60px;
+      height: 60px;
     }
     
     .floating-lyrics {
-      right: 150px;
-      bottom: 20px;
+      left: 90px;
+      bottom: 30px;
       max-width: 250px;
-      font-size: 14px;
-      padding: 10px 14px;
-    }
-    
-    .floating-lyrics .current-line {
       font-size: 16px;
     }
     
+    .floating-lyrics .current-line {
+      font-size: 18px;
+    }
+    
     .floating-lyrics .next-line {
-      font-size: 11px;
+      font-size: 12px;
     }
   }
 </style>
