@@ -221,7 +221,7 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       });
     }
 
-    // 歌词更新功能
+    // 歌词更新功能 - 修复版本
     function startLyricsUpdate(ap) {
       if (lyricsInterval) {
         clearInterval(lyricsInterval);
@@ -236,32 +236,78 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       try {
         if (!lyricsVisible) return;
         
-        const lrcContainer = document.querySelector('.aplayer-lrc');
+        // 尝试多种选择器获取歌词容器
+        let lrcContainer = document.querySelector('.aplayer-lrc') || 
+                          document.querySelector('.aplayer .aplayer-lrc-contents') ||
+                          document.querySelector('.aplayer-lrc-contents');
+        
         if (!lrcContainer) {
           if (floatingLyrics) floatingLyrics.classList.remove('show');
           return;
         }
         
-        const currentLrc = lrcContainer.querySelector('p.aplayer-lrc-current');
+        // 尝试多种选择器获取当前歌词
+        const currentLrc = lrcContainer.querySelector('p.aplayer-lrc-current') || 
+                          lrcContainer.querySelector('.aplayer-lrc-current') ||
+                          lrcContainer.querySelector('p[style*="opacity: 1"]') ||
+                          lrcContainer.querySelector('p:not([style*="opacity: 0"])');
+        
         const allLrcLines = lrcContainer.querySelectorAll('p');
         
-        if (currentLrc && currentLrc.textContent.trim()) {
+        if (currentLrc && currentLrc.textContent && currentLrc.textContent.trim()) {
           const currentText = currentLrc.textContent.trim();
           let nextText = '';
           
+          // 找到下一句歌词
           for (let i = 0; i < allLrcLines.length; i++) {
             if (allLrcLines[i] === currentLrc && i < allLrcLines.length - 1) {
-              nextText = allLrcLines[i + 1].textContent.trim();
+              const nextLrc = allLrcLines[i + 1];
+              if (nextLrc && nextLrc.textContent) {
+                nextText = nextLrc.textContent.trim();
+              }
               break;
             }
           }
           
           showLyricsWithEffect(currentText, nextText);
         } else {
+          // 如果没有找到当前歌词，尝试从APlayer实例直接获取
+          if (aplayer && aplayer.lrc && aplayer.lrc.currentTime) {
+            const currentTime = aplayer.audio.currentTime;
+            const lrcData = aplayer.lrc;
+            
+            if (lrcData && lrcData.lrc) {
+              let currentText = '';
+              let nextText = '';
+              
+              // 获取所有时间点并排序
+              const times = Object.keys(lrcData.lrc).map(Number).sort((a, b) => a - b);
+              
+              for (let i = 0; i < times.length; i++) {
+                if (currentTime >= times[i]) {
+                  currentText = lrcData.lrc[times[i]] || '';
+                  
+                  // 找下一句歌词
+                  if (i < times.length - 1) {
+                    nextText = lrcData.lrc[times[i + 1]] || '';
+                  }
+                } else {
+                  break;
+                }
+              }
+              
+              if (currentText && currentText.trim()) {
+                showLyricsWithEffect(currentText, nextText);
+                return;
+              }
+            }
+          }
+          
           if (floatingLyrics) floatingLyrics.classList.remove('show');
           currentLyric = '';
         }
       } catch (error) {
+        console.log('歌词监听错误:', error);
         if (floatingLyrics) floatingLyrics.classList.remove('show');
         currentLyric = '';
       }
