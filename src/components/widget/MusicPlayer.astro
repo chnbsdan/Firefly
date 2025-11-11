@@ -451,8 +451,15 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
         });
       }
       
-      // 右键菜单事件 - 修复：在整个页面都可以触发
+      // 右键菜单事件 - 修复：在整个页面都可以触发，但支持Ctrl+右键使用默认菜单
       document.addEventListener('contextmenu', (e) => {
+        // 检查是否按下了Ctrl键
+        if (e.ctrlKey) {
+          // 如果按下了Ctrl键，允许默认的右键菜单
+          return;
+        }
+        
+        // 否则显示自定义右键菜单
         e.preventDefault();
         showRightMenuAt(e.clientX, e.clientY);
       });
@@ -555,7 +562,7 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   })();
 </script>
 
-<style>
+<style is:global>
   /* ===== 播放器面板（点击胶囊展开） ===== */
   #player-wrap {
     position: fixed;
