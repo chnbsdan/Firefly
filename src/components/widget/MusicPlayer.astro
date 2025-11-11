@@ -1,8 +1,6 @@
 ---
-// src/components/widget/MusicPlayer.astro
-import type { MusicPlayerConfig } from "../../types/config";
-import { musicPlayerConfig } from "../../config/musicConfig";
-import { url } from "../../utils/url-utils";
+import { musicPlayerConfig } from "@/config/musicConfig";
+import { url } from "@/utils/url-utils";
 
 const config = musicPlayerConfig;
 
@@ -37,23 +35,12 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     <!-- 音乐胶囊 -->
     <div id="music-capsule" class="music-capsule" title="点击展开播放器">
       <img id="capsule-cover" src="https://p2.music.126.net/4HGEnXVexEfF2M4WdDdfrQ==/109951166354363385.jpg" alt="专辑封面" />
-      <!-- 黑胶唱片滑动杆 -->
-      <div class="vinyl-arm">
-        <div class="arm-base"></div>
-        <div class="arm-rod"></div>
-        <div class="arm-head"></div>
-      </div>
     </div>
 
     <!-- 独立歌词显示 -->
     <div id="floating-lyrics" class="floating-lyrics">
       <div class="current-line"></div>
       <div class="next-line"></div>
-    </div>
-
-    <!-- 播放器容器 -->
-    <div id="player-wrap" aria-hidden="true">
-      <div id="aplayer-container" class:mobile-hide={config.responsive?.mobile?.hide}></div>
     </div>
 
     <!-- 右键菜单 -->
@@ -69,132 +56,910 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       <li id="menu-close">❌ 关闭播放器</li>
     </ul>
 
-    <!-- 音乐播放器脚本 -->
-    <script>
-      // 音乐播放器配置
-      const MUSIC_CONFIG = {
-        enable: ${config.enable},
-        mode: "${config.mode}",
-        meting: ${JSON.stringify(config.meting || {})},
-        player: ${JSON.stringify(config.player || {})},
-        local: ${JSON.stringify(processedLocalPlaylist || [])},
-        responsive: ${JSON.stringify(config.responsive || {})}
-      };
-
-      // 脚本路径
-      const APLAYER_JS_PATH = "${aplayerJsPath}";
-      const METING_JS_PATH = "${metingJsPath}";
-    </script>
-    <script src="/assets/js/music-player.js" defer></script>
+    <!-- 音乐播放器容器 -->
+    <div id="aplayer-container" class:mobile-hide={config.responsive?.mobile?.hide}>
+      {config.mode === "meting" && config.meting ? (
+        <meting-js
+          server={config.meting.server || "netease"}
+          type={config.meting.type || "playlist"}
+          id={config.meting.id || ""}
+          api={config.meting.api}
+          auth={config.meting.auth}
+          fixed={(config.player?.fixed ?? true) ? "true" : "false"}
+          mini={(config.player?.mini ?? true) ? "true" : "false"}
+          autoplay={config.player?.autoplay ? "true" : "false"}
+          theme={config.player?.theme || "#b7daff"}
+          loop={config.player?.loop || "all"}
+          order={config.player?.order || "list"}
+          preload={config.player?.preload || "auto"}
+          volume={String(config.player?.volume ?? 0.7)}
+          mutex={config.player?.mutex !== false ? "true" : "false"}
+          lrc-type={String(config.player?.lrcType ?? 3)}
+          list-folded={config.player?.listFolded ? "true" : "false"}
+          list-max-height={config.player?.listMaxHeight || "340px"}
+          storage-name={config.player?.storageName || "aplayer-setting"}
+        />
+      ) : config.mode === "local" && processedLocalPlaylist && processedLocalPlaylist.length > 0 ? (
+        processedLocalPlaylist.length === 1 ? (
+          <meting-js
+            name={processedLocalPlaylist?.[0]?.name || ""}
+            artist={processedLocalPlaylist?.[0]?.artist || ""}
+            url={processedLocalPlaylist?.[0]?.url || ""}
+            cover={processedLocalPlaylist?.[0]?.cover}
+            fixed={(config.player?.fixed ?? true) ? "true" : "false"}
+            mini={(config.player?.mini ?? true) ? "true" : "false"}
+            autoplay={config.player?.autoplay ? "true" : "false"}
+            theme={config.player?.theme || "#b7daff"}
+            loop={config.player?.loop || "all"}
+            order={config.player?.order || "list"}
+            preload={config.player?.preload || "auto"}
+            volume={String(config.player?.volume ?? 0.7)}
+            mutex={config.player?.mutex !== false ? "true" : "false"}
+            lrc-type={processedLocalPlaylist[0]?.lrc ? "2" : "0"}
+            list-folded={config.player?.listFolded ? "true" : "false"}
+            list-max-height={config.player?.listMaxHeight || "340px"}
+            storage-name={config.player?.storageName || "aplayer-setting"}
+          >
+            {processedLocalPlaylist?.[0]?.lrc && (
+              <pre hidden>{processedLocalPlaylist[0].lrc}</pre>
+            )}
+          </meting-js>
+        ) : (
+          <div id="local-aplayer"></div>
+        )
+      ) : null}
+    </div>
   </>
 )}
 
+<script define:vars={{ config, aplayerJsPath, metingJsPath, processedLocalPlaylist }} is:inline>
+  (function() {
+    if (!config.enable) return;
+    if (typeof window === 'undefined') return;
+
+    // 状态变量
+    let lyricsVisible = localStorage.getItem('lyricsVisible') !== 'false';
+    let isPlayerVisible = false;
+    let lyricsUpdateInterval = null;
+
+    // 初始化所有功能
+    function initAllFeatures() {
+      initCapsule();
+      initRightClickMenu();
+      initPlayerListener();
+    }
+
+    // 初始化胶囊
+    function initCapsule() {
+      const capsule = document.getElementById('music-capsule');
+      if (!capsule) return;
+
+      // 胶囊点击 - 切换播放器显示
+      capsule.addEventListener('click', togglePlayerVisibility);
+
+      // 初始隐藏播放器
+      const container = document.getElementById('aplayer-container');
+      if (container) {
+        container.style.display = 'none';
+      }
+    }
+
+    // 切换播放器显示
+    function togglePlayerVisibility() {
+      const container = document.getElementById('aplayer-container');
+      if (!container) return;
+      
+      isPlayerVisible = !isPlayerVisible;
+      container.style.display = isPlayerVisible ? '' : 'none';
+    }
+
+    // 切换歌词显示
+    function toggleLyricsVisibility() {
+      lyricsVisible = !lyricsVisible;
+      localStorage.setItem('lyricsVisible', lyricsVisible.toString());
+      updateLyricsDisplay();
+    }
+
+    // 更新歌词显示
+    function updateLyricsDisplay() {
+      const floatingLyrics = document.getElementById('floating-lyrics');
+      if (floatingLyrics) {
+        if (lyricsVisible) {
+          floatingLyrics.style.display = 'block';
+        } else {
+          floatingLyrics.style.display = 'none';
+          floatingLyrics.classList.remove('show');
+        }
+      }
+    }
+
+    // 初始化右键菜单
+    function initRightClickMenu() {
+      const rightMenu = document.getElementById('right-menu');
+      if (!rightMenu) return;
+
+      // 显示菜单
+      function showMenuAt(clientX, clientY) {
+        rightMenu.style.display = 'block';
+        rightMenu.classList.remove('show');
+        
+        setTimeout(() => {
+          const menuRect = rightMenu.getBoundingClientRect();
+          const menuWidth = menuRect.width;
+          const menuHeight = menuRect.height;
+          
+          let left = clientX;
+          let top = clientY;
+          
+          // 水平方向调整
+          if (left + menuWidth > window.innerWidth - 10) {
+            left = clientX - menuWidth;
+          }
+          
+          // 垂直方向调整
+          if (top + menuHeight > window.innerHeight - 10) {
+            top = clientY - menuHeight;
+          }
+          
+          // 确保不超出边界
+          left = Math.max(10, Math.min(left, window.innerWidth - menuWidth - 10));
+          top = Math.max(10, Math.min(top, window.innerHeight - menuHeight - 10));
+          
+          rightMenu.style.left = left + 'px';
+          rightMenu.style.top = top + 'px';
+          
+          // 箭头位置
+          const arrowLeft = Math.max(15, Math.min(clientX - left, menuWidth - 15));
+          rightMenu.style.setProperty('--arrow-left', arrowLeft + 'px');
+          
+          rightMenu.classList.add('show');
+        }, 10);
+      }
+
+      // 隐藏菜单
+      function hideRightMenuImmediate() {
+        rightMenu.classList.remove('show');
+        setTimeout(() => {
+          rightMenu.style.display = 'none';
+        }, 200);
+      }
+
+      // 绑定菜单事件
+      document.getElementById('menu-play').addEventListener('click', () => { togglePlay(); hideRightMenuImmediate(); });
+      document.getElementById('menu-prev').addEventListener('click', () => { prevSong(); hideRightMenuImmediate(); });
+      document.getElementById('menu-next').addEventListener('click', () => { nextSong(); hideRightMenuImmediate(); });
+      document.getElementById('menu-volup').addEventListener('click', () => { volumeUp(); hideRightMenuImmediate(); });
+      document.getElementById('menu-voldown').addEventListener('click', () => { volumeDown(); hideRightMenuImmediate(); });
+      document.getElementById('menu-lyrics').addEventListener('click', () => { toggleLyricsVisibility(); hideRightMenuImmediate(); });
+      document.getElementById('menu-support').addEventListener('click', () => { window.open('https://1356666.xyz','_blank'); hideRightMenuImmediate(); });
+      document.getElementById('menu-fullscreen').addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(()=>{});
+        } else {
+          document.exitFullscreen().catch(()=>{});
+        }
+        hideRightMenuImmediate();
+      });
+      document.getElementById('menu-close').addEventListener('click', () => { 
+        const aplayer = getAPlayerInstance();
+        if (aplayer) aplayer.pause();
+        togglePlayerVisibility();
+        hideRightMenuImmediate();
+      });
+
+      // 全局右键事件
+      document.addEventListener('contextmenu', function(e) {
+        const target = e.target;
+        const isOnCapsule = target.closest('#music-capsule');
+        const isOnPlayer = target.closest('.aplayer') || target.closest('#aplayer-container');
+        
+        if (isOnCapsule || isOnPlayer) {
+          e.preventDefault();
+          e.stopPropagation();
+          showMenuAt(e.clientX, e.clientY);
+        }
+      });
+
+      // 点击其他地方隐藏菜单
+      document.addEventListener('click', function(e) {
+        if (!rightMenu.contains(e.target)) {
+          hideRightMenuImmediate();
+        }
+      });
+
+      // ESC键隐藏菜单
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          hideRightMenuImmediate();
+        }
+      });
+
+      // 窗口大小变化时隐藏菜单
+      window.addEventListener('resize', hideRightMenuImmediate);
+    }
+
+    // 播放控制函数
+    function getAPlayerInstance() {
+      const metingElement = document.querySelector('meting-js');
+      if (metingElement?.aplayer) return metingElement.aplayer;
+      const localPlayer = document.getElementById('local-aplayer');
+      if (localPlayer?.aplayer) return localPlayer.aplayer;
+      const aplayerElements = document.querySelectorAll('.aplayer');
+      for (let element of aplayerElements) {
+        if (element.aplayer) return element.aplayer;
+      }
+      return null;
+    }
+
+    function togglePlay() {
+      const aplayer = getAPlayerInstance();
+      if (aplayer) {
+        aplayer.toggle();
+      }
+    }
+
+    function prevSong() {
+      const aplayer = getAPlayerInstance();
+      if (aplayer) aplayer.skipBack();
+    }
+
+    function nextSong() {
+      const aplayer = getAPlayerInstance();
+      if (aplayer) aplayer.skipForward();
+    }
+
+    function volumeUp() {
+      const aplayer = getAPlayerInstance();
+      if (aplayer) {
+        const newVolume = Math.min((aplayer.audio.volume || 0.7) + 0.1, 1);
+        aplayer.volume(newVolume, true);
+      }
+    }
+
+    function volumeDown() {
+      const aplayer = getAPlayerInstance();
+      if (aplayer) {
+        const newVolume = Math.max((aplayer.audio.volume || 0.7) - 0.1, 0);
+        aplayer.volume(newVolume, true);
+      }
+    }
+
+    // 初始化播放器监听 - 修复歌词显示
+    function initPlayerListener() {
+      const aplayer = getAPlayerInstance();
+      if (!aplayer) {
+        setTimeout(initPlayerListener, 500);
+        return;
+      }
+
+      const capsule = document.getElementById('music-capsule');
+      const capsuleCover = document.getElementById('capsule-cover');
+      const floatingLyrics = document.getElementById('floating-lyrics');
+      const currentLineEl = floatingLyrics?.querySelector('.current-line');
+      const nextLineEl = floatingLyrics?.querySelector('.next-line');
+
+      let currentLyric = '';
+
+      // 监听播放状态
+      aplayer.on('play', function() {
+        if (capsule) capsule.classList.add('playing');
+        updateCover();
+      });
+      
+      aplayer.on('pause', function() {
+        if (capsule) capsule.classList.remove('playing');
+      });
+      
+      aplayer.on('ended', function() {
+        if (capsule) capsule.classList.remove('playing');
+        updateLyrics('', '');
+      });
+      
+      aplayer.on('loadeddata', updateCover);
+      aplayer.on('listswitch', updateCover);
+
+      // 更新胶囊封面
+      function updateCover() {
+        try {
+          const currentAudio = aplayer.list.audios[aplayer.list.index];
+          if (currentAudio && currentAudio.cover && capsuleCover) {
+            capsuleCover.src = currentAudio.cover;
+          }
+        } catch(e) {
+          console.log('更新封面失败:', e);
+        }
+      }
+
+      // 更新歌词显示 - 修复歌词获取逻辑
+      function updateLyrics(current, next) {
+        if (!currentLineEl || !nextLineEl || !lyricsVisible) return;
+        
+        currentLineEl.textContent = current || '';
+        nextLineEl.textContent = next || '';
+        
+        if (current && lyricsVisible) {
+          floatingLyrics.classList.add('show');
+        } else {
+          floatingLyrics.classList.remove('show');
+        }
+      }
+
+      // 监听歌词变化 - 修复歌词监听
+      function startLyricsListener() {
+        setInterval(() => {
+          if (!lyricsVisible) {
+            updateLyrics('', '');
+            return;
+          }
+          
+          // 尝试从多个位置获取歌词
+          let lrcContainer = document.querySelector('.aplayer-lrc');
+          if (!lrcContainer) {
+            // 如果找不到歌词容器，尝试从播放器内部查找
+            const aplayerEl = document.querySelector('.aplayer');
+            if (aplayerEl) {
+              lrcContainer = aplayerEl.querySelector('.aplayer-lrc');
+            }
+          }
+          
+          if (!lrcContainer) {
+            updateLyrics('', '');
+            return;
+          }
+          
+          const currentLrc = lrcContainer.querySelector('p.aplayer-lrc-current');
+          const allLrcLines = lrcContainer.querySelectorAll('p');
+          
+          if (currentLrc && currentLrc.textContent && currentLrc.textContent.trim()) {
+            const currentText = currentLrc.textContent.trim();
+            let nextText = '';
+            
+            // 找到下一句歌词
+            for (let i = 0; i < allLrcLines.length; i++) {
+              if (allLrcLines[i] === currentLrc && i < allLrcLines.length - 1) {
+                const nextLrc = allLrcLines[i + 1];
+                if (nextLrc && nextLrc.textContent) {
+                  nextText = nextLrc.textContent.trim();
+                }
+                break;
+              }
+            }
+            
+            if (currentText !== currentLyric) {
+              currentLyric = currentText;
+              updateLyrics(currentText, nextText);
+            }
+          } else {
+            updateLyrics('', '');
+            currentLyric = '';
+          }
+        }, 200); // 降低检查频率
+      }
+
+      // 开始监听歌词
+      startLyricsListener();
+      // 初始更新歌词显示状态
+      updateLyricsDisplay();
+    }
+
+    // 你的原有 APlayer 加载代码（保持不变）
+    function loadAPlayer() {
+      return new Promise((resolve) => {
+        if (window.APlayer) {
+          resolve(window.APlayer);
+          return;
+        }
+        const aplayerScript = document.createElement("script");
+        aplayerScript.src = aplayerJsPath;
+        aplayerScript.async = true;
+        aplayerScript.onload = () => resolve(window.APlayer);
+        aplayerScript.onerror = () => {
+          console.error("Failed to load APlayer");
+          resolve(null);
+        };
+        document.head.appendChild(aplayerScript);
+      });
+    }
+
+    // 全局用户交互状态
+    if (!window.hasMusicInteracted) {
+      window.hasMusicInteracted = false;
+    }
+    
+    function tryAutoplay(aplayer) {
+      if (!config.player?.autoplay) return;
+      
+      if (window.hasMusicInteracted) {
+        if (aplayer && aplayer.paused) {
+          const playPromise = aplayer.play();
+          if (playPromise && typeof playPromise.catch === 'function') {
+            playPromise.catch((error) => {
+              if (error.name !== 'NotAllowedError') {
+                console.log('自动播放失败:', error.name);
+              }
+            });
+          }
+        }
+      } else {
+        const enableAutoplay = () => {
+          if (window.hasMusicInteracted) return;
+          window.hasMusicInteracted = true;
+          
+          if (aplayer && aplayer.paused) {
+            const playPromise = aplayer.play();
+            if (playPromise && typeof playPromise.catch === 'function') {
+              playPromise.catch((error) => {
+                if (error.name !== 'NotAllowedError') {
+                  console.log('自动播放失败:', error.name);
+                }
+              });
+            }
+          }
+        };
+        
+        ['click', 'keydown', 'touchstart', 'scroll'].forEach(eventType => {
+          document.addEventListener(eventType, enableAutoplay, { 
+            once: true, 
+            passive: true 
+          });
+        });
+      }
+    }
+
+    // 检查 MetingJS 元素是否成功加载了音乐
+    function checkMetingSuccess(metingElement, timeout = 5000) {
+      return new Promise((resolve) => {
+        const startTime = Date.now();
+        
+        const checkSuccess = setInterval(() => {
+          const aplayer = metingElement?.aplayer;
+          if (aplayer && aplayer.list && aplayer.list.audios && aplayer.list.audios.length > 0) {
+            clearInterval(checkSuccess);
+            resolve(true);
+            return;
+          }
+          
+          if (Date.now() - startTime >= timeout) {
+            clearInterval(checkSuccess);
+            resolve(false);
+          }
+        }, 100);
+      });
+    }
+
+    // 重新创建 MetingJS 元素以使用新的 API
+    function recreateMetingElement(container, apiUrl, config) {
+      const oldElement = container.querySelector('meting-js');
+      if (oldElement) {
+        if (oldElement.aplayer) {
+          try {
+            oldElement.aplayer.destroy();
+          } catch (e) {
+            console.warn('销毁旧 APlayer 实例时出错:', e);
+          }
+        }
+        oldElement.remove();
+      }
+      
+      const newElement = document.createElement('meting-js');
+      newElement.setAttribute('server', config.meting?.server || 'netease');
+      newElement.setAttribute('type', config.meting?.type || 'playlist');
+      newElement.setAttribute('id', config.meting?.id || '');
+      newElement.setAttribute('api', apiUrl);
+      if (config.meting?.auth) {
+        newElement.setAttribute('auth', config.meting.auth);
+      }
+      newElement.setAttribute('fixed', (config.player?.fixed ?? true) ? 'true' : 'false');
+      newElement.setAttribute('mini', (config.player?.mini ?? true) ? 'true' : 'false');
+      newElement.setAttribute('autoplay', config.player?.autoplay ? 'true' : 'false');
+      newElement.setAttribute('theme', config.player?.theme || '#b7daff');
+      newElement.setAttribute('loop', config.player?.loop || 'all');
+      newElement.setAttribute('order', config.player?.order || 'list');
+      newElement.setAttribute('preload', config.player?.preload || 'auto');
+      newElement.setAttribute('volume', String(config.player?.volume ?? 0.7));
+      newElement.setAttribute('mutex', config.player?.mutex !== false ? 'true' : 'false');
+      newElement.setAttribute('lrc-type', String(config.player?.lrcType ?? 3));
+      newElement.setAttribute('list-folded', config.player?.listFolded ? 'true' : 'false');
+      newElement.setAttribute('list-max-height', config.player?.listMaxHeight || '340px');
+      newElement.setAttribute('storage-name', config.player?.storageName || 'aplayer-setting');
+      
+      container.appendChild(newElement);
+      return newElement;
+    }
+
+    // 处理移动端显示/隐藏
+    function handleMobileVisibility(aplayer) {
+      if (!aplayer || !aplayer.container) return;
+      
+      const shouldHide = config.responsive?.mobile?.hide === true;
+      const breakpoint = config.responsive?.mobile?.breakpoint || 768;
+      const isMobile = window.innerWidth <= breakpoint;
+      
+      if (shouldHide && isMobile) {
+        aplayer.container.style.display = 'none';
+        aplayer.container.classList.add('mobile-hide');
+        
+        const container = document.getElementById('aplayer-container');
+        if (container) {
+          container.style.display = 'none';
+          container.classList.add('mobile-hide');
+        }
+      } else {
+        aplayer.container.style.display = '';
+        aplayer.container.classList.remove('mobile-hide');
+        
+        const container = document.getElementById('aplayer-container');
+        if (container) {
+          container.style.display = '';
+          container.classList.remove('mobile-hide');
+        }
+      }
+    }
+    
+    // 初始化时处理容器的移动端显示/隐藏
+    function initContainerMobileVisibility() {
+      const container = document.getElementById('aplayer-container');
+      if (!container) return;
+      
+      const shouldHide = config.responsive?.mobile?.hide === true;
+      const breakpoint = config.responsive?.mobile?.breakpoint || 768;
+      const isMobile = window.innerWidth <= breakpoint;
+      
+      if (shouldHide && isMobile) {
+        container.style.display = 'none';
+        container.classList.add('mobile-hide');
+      } else {
+        container.style.display = '';
+        container.classList.remove('mobile-hide');
+      }
+      
+      const resizeHandler = () => {
+        const nowIsMobile = window.innerWidth <= breakpoint;
+        if (shouldHide && nowIsMobile) {
+          container.style.display = 'none';
+          container.classList.add('mobile-hide');
+        } else {
+          container.style.display = '';
+          container.classList.remove('mobile-hide');
+        }
+      };
+      window.addEventListener('resize', resizeHandler);
+    }
+
+    // 初始化 MetingJS 元素并设置播放器
+    function setupMetingElement(metingElement) {
+      return new Promise((resolve) => {
+        const checkAPlayer = setInterval(() => {
+          const aplayer = metingElement.aplayer;
+          if (aplayer && aplayer.container) {
+            clearInterval(checkAPlayer);
+            
+            const updatePlayingState = () => {
+              if (aplayer.container) {
+                const isPlaying = !aplayer.paused;
+                aplayer.container.setAttribute('data-playing', String(isPlaying));
+                if (isPlaying) {
+                  aplayer.container.classList.add('aplayer-playing');
+                } else {
+                  aplayer.container.classList.remove('aplayer-playing');
+                }
+              }
+            };
+            
+            if (aplayer.audio) {
+              aplayer.audio.addEventListener('play', updatePlayingState);
+              aplayer.audio.addEventListener('pause', updatePlayingState);
+              aplayer.audio.addEventListener('ended', updatePlayingState);
+            }
+            
+            aplayer.container.setAttribute('data-positioned', 'right');
+            requestAnimationFrame(() => {
+              if (aplayer.container) {
+                aplayer.container.style.right = '0';
+                aplayer.container.style.left = 'unset';
+                
+                updatePlayingState();
+                handleMobileVisibility(aplayer);
+                
+                const resizeHandler = () => handleMobileVisibility(aplayer);
+                window.addEventListener('resize', resizeHandler);
+                
+                setTimeout(() => {
+                  aplayer.container.setAttribute('data-initialized', 'true');
+                  
+                  if (config.player?.lrcHidden && aplayer.lrc) {
+                    aplayer.lrc.hide();
+                    const lrcButton = aplayer.container.querySelector('.aplayer-icon-lrc');
+                    if (lrcButton) {
+                      lrcButton.classList.add('aplayer-icon-lrc-inactivity');
+                    }
+                  }
+                  
+                  if (config.player?.autoplay && aplayer.paused) {
+                    tryAutoplay(aplayer);
+                  }
+
+                  // 初始化所有功能
+                  initAllFeatures();
+                }, 200);
+              }
+            });
+            
+            resolve(true);
+          }
+        }, 50);
+        
+        setTimeout(() => {
+          clearInterval(checkAPlayer);
+          resolve(false);
+        }, 10000);
+      });
+    }
+
+    // 使用备用 API 重试加载
+    async function retryWithFallbackAPI(container, fallbackApis, currentIndex = 0) {
+      if (currentIndex >= fallbackApis.length) {
+        console.error('所有 API 都失败了，无法加载音乐播放器');
+        return null;
+      }
+      
+      const fallbackApi = fallbackApis[currentIndex];
+      console.log(`尝试使用备用 API ${currentIndex + 1}/${fallbackApis.length}: ${fallbackApi}`);
+      
+      const server = config.meting?.server || 'netease';
+      const type = config.meting?.type || 'playlist';
+      const id = config.meting?.id || '';
+      
+      let apiUrl = fallbackApi
+        .replace(':server', server)
+        .replace(':type', type)
+        .replace(':id', id);
+      
+      window.meting_api = apiUrl;
+      
+      const newElement = recreateMetingElement(container, apiUrl, config);
+      
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const success = await checkMetingSuccess(newElement, 5000);
+      
+      if (success) {
+        console.log(`备用 API ${currentIndex + 1} 成功加载音乐`);
+        return newElement;
+      } else {
+        return retryWithFallbackAPI(container, fallbackApis, currentIndex + 1);
+      }
+    }
+
+    // 加载 MetingJS
+    function loadMetingJS() {
+      return new Promise((resolve) => {
+        if (window.customElements?.get("meting-js")) {
+          resolve(true);
+          return;
+        }
+
+        const metingScript = document.createElement("script");
+        metingScript.src = metingJsPath;
+        metingScript.async = true;
+        metingScript.onload = async () => {
+          await new Promise(resolve => setTimeout(resolve, 100));
+          
+          const container = document.getElementById('aplayer-container');
+          if (!container) {
+            resolve(false);
+            return;
+          }
+          
+          let metingElement = container.querySelector('meting-js');
+          
+          if (config.mode === "meting" && config.meting?.api && metingElement) {
+            const server = config.meting.server || 'netease';
+            const type = config.meting.type || 'playlist';
+            const id = config.meting.id || '';
+            
+            let mainApiUrl = config.meting.api
+              .replace(':server', server)
+              .replace(':type', type)
+              .replace(':id', id)
+              .replace(':r', Math.random().toString());
+            
+            window.meting_api = mainApiUrl;
+            
+            console.log('尝试使用主 API:', mainApiUrl);
+            
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            const mainApiSuccess = await checkMetingSuccess(metingElement, 5000);
+            
+            if (!mainApiSuccess && config.meting.fallbackApis && config.meting.fallbackApis.length > 0) {
+              console.warn('主 API 失败，尝试使用备用 API');
+              const newElement = await retryWithFallbackAPI(container, config.meting.fallbackApis);
+              if (newElement) {
+                metingElement = newElement;
+              }
+            }
+          }
+          
+          if (metingElement) {
+            await setupMetingElement(metingElement);
+          }
+          
+          resolve(true);
+        };
+        metingScript.onerror = () => {
+          console.error("Failed to load MetingJS");
+          resolve(false);
+        };
+        document.head.appendChild(metingScript);
+      });
+    }
+
+    // 初始化本地音乐播放器（多个音乐）
+    async function initLocalPlayer() {
+      if (
+        config.mode !== "local" ||
+        !processedLocalPlaylist ||
+        processedLocalPlaylist.length <= 1
+      ) {
+        return;
+      }
+
+      const APlayerClass = await loadAPlayer();
+      if (!APlayerClass) return;
+
+      const container = document.getElementById("local-aplayer");
+      if (!container) return;
+
+      const audioList = processedLocalPlaylist.map((song) => ({
+        name: song.name,
+        artist: song.artist,
+        url: song.url,
+        cover: song.cover,
+        lrc: song.lrc || undefined,
+        type: "auto",
+      }));
+
+      const aplayerOptions = {
+        container: container,
+        audio: audioList,
+        mutex: config.player?.mutex !== false,
+        lrcType: config.player?.lrcType !== undefined ? config.player.lrcType : 0,
+        fixed: config.player?.fixed ?? true,
+        mini: config.player?.mini ?? true,
+        autoplay: config.player?.autoplay || false,
+        theme: config.player?.theme || "#b7daff",
+        loop: config.player?.loop || "all",
+        order: config.player?.order || "list",
+        preload: config.player?.preload || "auto",
+        volume: config.player?.volume || 0.7,
+        listFolded: config.player?.listFolded || false,
+        listMaxHeight: config.player?.listMaxHeight || "340px",
+        storageName: config.player?.storageName || "aplayer-setting",
+      };
+
+      try {
+        const aplayer = new APlayerClass(aplayerOptions);
+        
+        const updatePlayingState = () => {
+          if (aplayer.container) {
+            const isPlaying = !aplayer.paused;
+            aplayer.container.setAttribute('data-playing', String(isPlaying));
+            if (isPlaying) {
+              aplayer.container.classList.add('aplayer-playing');
+            } else {
+              aplayer.container.classList.remove('aplayer-playing');
+            }
+          }
+        };
+        
+        if (aplayer.audio) {
+          aplayer.audio.addEventListener('play', updatePlayingState);
+          aplayer.audio.addEventListener('pause', updatePlayingState);
+          aplayer.audio.addEventListener('ended', updatePlayingState);
+        }
+        
+        if (aplayer.container) {
+          aplayer.container.setAttribute('data-positioned', 'right');
+          requestAnimationFrame(() => {
+            if (aplayer.container) {
+              aplayer.container.style.right = '0';
+              aplayer.container.style.left = 'unset';
+              
+              updatePlayingState();
+              handleMobileVisibility(aplayer);
+              
+              const resizeHandler = () => handleMobileVisibility(aplayer);
+              window.addEventListener('resize', resizeHandler);
+              
+              setTimeout(() => {
+                aplayer.container.setAttribute('data-initialized', 'true');
+                
+                if (config.player?.lrcHidden && aplayer.lrc) {
+                  aplayer.lrc.hide();
+                  const lrcButton = aplayer.container.querySelector('.aplayer-icon-lrc');
+                  if (lrcButton) {
+                    lrcButton.classList.add('aplayer-icon-lrc-inactivity');
+                  }
+                }
+                
+                if (config.player?.autoplay && aplayer.paused) {
+                  tryAutoplay(aplayer);
+                }
+
+                // 初始化所有功能
+                initAllFeatures();
+              }, 100);
+            }
+          });
+        }
+      } catch (error) {
+        console.error("Failed to initialize APlayer:", error);
+      }
+    }
+
+    // 初始化容器的移动端显示/隐藏
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initContainerMobileVisibility);
+    } else {
+      initContainerMobileVisibility();
+    }
+    
+    // 如果使用 Meting 模式，加载 MetingJS
+    if (config.mode === "meting") {
+      loadAPlayer().then(() => {
+        loadMetingJS();
+      });
+    } else if (config.mode === "local") {
+      if (processedLocalPlaylist && processedLocalPlaylist.length > 1) {
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", initLocalPlayer);
+        } else {
+          initLocalPlayer();
+        }
+      } else {
+        loadAPlayer().then(() => {
+          loadMetingJS();
+        });
+      }
+    }
+  })();
+</script>
+
 <style>
-  /* ===== 播放器面板（点击胶囊展开） ===== */
-  #player-wrap {
-    position: fixed;
-    left: 18px;
-    bottom: 92px;
-    width: 360px;
-    max-width: calc(100% - 36px);
-    z-index: 15000;
-    display: none;
-    transform-origin: left bottom;
-  }
-  #player-wrap.show {
-    display: block;
-    animation: popIn .18s ease;
-  }
-  @keyframes popIn {
-    from { opacity: 0; transform: scale(.96) }
-    to { opacity: 1; transform: scale(1) }
+  /* 原有播放器样式保持不变 */
+  #aplayer-container {
+    position: relative;
+    z-index: 1000;
   }
 
-  /* APlayer 微调样式 */
-  .aplayer { 
-    border-radius: 12px !important; 
-    overflow: hidden !important; 
+  #aplayer-container .aplayer-fixed {
+    z-index: 9999;
   }
 
-  /* ===== 音乐播放器样式修改 ===== */
-  /* 顶部歌曲名改为黑色 */
-  .aplayer .aplayer-info .aplayer-music .aplayer-title {
-    color: #000 !important;
-    font-weight: bold;
+  #aplayer-container .aplayer.aplayer-fixed {
+    animation: none !important;
+  }
+  
+  #aplayer-container .aplayer.aplayer-fixed .aplayer-body {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  #aplayer-container .aplayer.aplayer-fixed[data-positioned="right"] {
+    right: 0 !important;
+    left: unset !important;
   }
 
-  /* 播放列表歌名改为黑色 */
-  .aplayer .aplayer-list ol li {
-    color: #000 !important;
+  .aplayer-fixed.mobile-hide {
+    display: none !important;
+  }
+  
+  #aplayer-container.mobile-hide {
+    display: none !important;
   }
 
-  .aplayer .aplayer-list ol li .aplayer-list-title {
-    color: #000 !important;
-  }
-
-  /* 歌词改为橙色 */
-  .aplayer .aplayer-lrc p {
-    color: #ff8c00 !important;
-  }
-
-  .aplayer .aplayer-lrc p.aplayer-lrc-current {
-    color: #ff4500 !important;
-    font-weight: bold;
-    font-size: 16px;
-  }
-
-  /* 播放器整体样式调整 */
-  .aplayer {
-    background: rgba(255, 255, 255, 0.9) !important;
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  }
-
-  /* ===== 独立歌词显示 ===== */
-  .floating-lyrics {
-    position: fixed;
-    left: 100px;
-    bottom: 50px;
-    text-align: left;
-    z-index: 99999;
-    color: #ff8c00;
-    font-size: 18px;
-    font-weight: bold;
-    text-shadow: 2px 2px 12px rgba(0, 0, 0, 0.9);
-    background: rgba(255, 255, 255, 0.10);
-    padding: 15px 20px;
-    border-radius: 12px;
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    max-width: 400px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    pointer-events: none;
-    display: none;
-  }
-
-  .floating-lyrics.show {
-    opacity: 1;
-    display: block;
-  }
-
-  .floating-lyrics .current-line {
-    color: #ff4500;
-    font-size: 30px;
-    margin-bottom: 8px;
-    font-weight: bold;
-    min-height: 24px;
-  }
-
-  .floating-lyrics .next-line {
-    color: #ff8c00;
-    font-size: 14px;
-    opacity: 0.8;
-    min-height: 18px;
-  }
-
-  /* ===== 音乐胶囊（固定左下） ===== */
+  /* 音乐胶囊样式 */
   .music-capsule {
     position: fixed;
     left: 22px;
@@ -209,7 +974,7 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     z-index: 30000;
     background: radial-gradient(circle at 30% 30%, #00c3ff, #0061ff);
     box-shadow: 0 8px 28px rgba(0, 180, 255, 0.12);
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
   }
 
   .music-capsule:hover {
@@ -238,109 +1003,94 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     to { transform: rotate(360deg) }
   }
 
-  /* 黑胶唱片滑动杆 */
-  .vinyl-arm {
-    position: absolute;
-    top: -30px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90px;
-    height: 70px;
-    z-index: 10;
-    pointer-events: none;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-  }
-
-  .arm-base {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 16px;
-    height: 25px;
-    background: linear-gradient(135deg, #8b8b8b, #4a4a4a, #8b8b8b);
-    border-radius: 4px 4px 2px 2px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-    border: 1px solid #5a5a5a;
-  }
-
-  .arm-rod {
-    position: absolute;
-    top: 25px;
-    left: 50%;
-    width: 3px;
-    height: 45px;
-    background: linear-gradient(to bottom, #c0c0c0, #808080, #505050);
-    transform-origin: top center;
-    transform: translateX(-50%) rotate(-25deg);
-    transition: transform 0.8s cubic-bezier(0.34, 1.2, 0.64, 1);
-    border-radius: 1px;
-  }
-
-  .arm-head {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 12px;
-    height: 12px;
-    background: linear-gradient(135deg, #333, #000);
-    border-radius: 50%;
-    transform: translateX(-50%);
-    box-shadow: 0 1px 6px rgba(0,0,0,0.6), 
-          inset 0 1px 1px rgba(255,255,255,0.2);
-    border: 1px solid #000;
-  }
-
-  /* 播放状态 */
-  .music-capsule.playing .vinyl-arm .arm-rod {
-    transform: translateX(-50%) rotate(25deg);
-  }
-
-  /* ===== 右键菜单（毛玻璃半透明） ===== */
-  #right-menu {
+  /* 独立歌词显示 */
+  .floating-lyrics {
     position: fixed;
-    display: none;
-    z-index: 40000;
-    min-width: 220px;
-    background: rgba(255,255,255,0.12);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    color: #008000;
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-    padding: 6px 0;
+    left: 100px;
+    bottom: 50px;
+    text-align: left;
+    z-index: 99999;
+    color: #ff8c00;
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 2px 2px 12px rgba(0, 0, 0, 0.9);
+    background: rgba(255, 255, 255, 0.10);
+    padding: 15px 20px;
+    border-radius: 12px;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    max-width: 400px;
     opacity: 0;
-    transform: scale(.98);
-    transition: opacity .12s,transform .12s;
+    transition: opacity 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    pointer-events: none;
+    display: none;
   }
-  #right-menu.show {
-    display: flex;
+
+  .floating-lyrics.show {
     opacity: 1;
-    transform: scale(1);
-    flex-direction: column;
   }
-  #right-menu li {
-    list-style: none;
-    padding: 10px 16px;
-    cursor: pointer;
-    white-space: nowrap;
-    font-weight: 700;
-    transition: background .12s;
+
+  .floating-lyrics .current-line {
+    color: #ff4500;
+    font-size: 30px;
+    margin-bottom: 8px;
+    font-weight: bold;
+    min-height: 24px;
   }
-  #right-menu li:hover {
-    background: rgba(255,255,255,0.14);
-    color: #f97316;
-    border-radius: 6px;
+
+  .floating-lyrics .next-line {
+    color: #ff8c00;
+    font-size: 14px;
+    opacity: 0.8;
+    min-height: 18px;
   }
-  #right-menu::after {
-    content: "";
-    position: absolute;
-    top: -8px;
-    left: var(--arrow-left,24px);
-    transform: translateX(-50%);
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-bottom: 8px solid rgba(255,255,255,0.12);
+
+  /* 右键菜单 */
+  #right-menu{
+    position:fixed;
+    display:none;
+    z-index:40000;
+    min-width:220px;
+    background:rgba(255,255,255,0.12);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    color:#008000;
+    border-radius:10px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.35);
+    padding:6px 0;
+    opacity:0;
+    transform:scale(.98);
+    transition:opacity .12s,transform .12s
+  }
+  #right-menu.show{
+    display:flex;
+    opacity:1;
+    transform:scale(1);
+    flex-direction:column
+  }
+  #right-menu li{
+    list-style:none;
+    padding:10px 16px;
+    cursor:pointer;
+    white-space:nowrap;
+    font-weight:700;
+    transition:background .12s
+  }
+  #right-menu li:hover{
+    background:rgba(255,255,255,0.14);
+    color:#f97316;
+    border-radius:6px
+  }
+  #right-menu::after{
+    content:"";
+    position:absolute;
+    top:-8px;
+    left:var(--arrow-left,24px);
+    transform:translateX(-50%);
+    border-left:8px solid transparent;
+    border-right:8px solid transparent;
+    border-bottom:8px solid rgba(255,255,255,0.12)
   }
 
   /* 响应式调整 */
@@ -366,15 +1116,5 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     .floating-lyrics .next-line {
       font-size: 12px;
     }
-    
-    #player-wrap {
-      width: calc(100vw - 36px);
-      max-width: 360px;
-    }
-  }
-
-  /* 移动端隐藏 */
-  .mobile-hide {
-    display: none !important;
   }
 </style>
