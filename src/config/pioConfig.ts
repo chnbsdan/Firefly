@@ -32,11 +32,12 @@ export const spineModelConfig: SpineModelConfig = {
       "emoji_6",
     ], // 点击时随机播放的动画列表
     clickMessages: [
-      "你好呀！我是流萤~",
+      "你好呀！我是hangdn~",
       "今天也要加油哦！✨",
       "想要一起去看星空吗？🌟",
       "记得要好好休息呢~",
       "有什么想对我说的吗？💫",
+      "我一直都在哦，大家一起努力吧！",
       "让我们一起探索未知的世界吧！🚀",
       "每一颗星星都有自己的故事~⭐",
       "希望能带给你温暖和快乐！💖",
@@ -75,7 +76,7 @@ export const live2dModelConfig: Live2DModelConfig = {
     enabled: true, // 启用交互功能
     // motions 和 expressions 将从模型 JSON 文件中自动读取
     clickMessages: [
-      "你好！我是Miku~",
+      "你好！我是hangdn",
       "有什么需要帮助的吗？",
       "今天天气真不错呢！",
       "要不要一起玩游戏？",
