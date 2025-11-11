@@ -120,6 +120,7 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     // 状态变量
     let lyricsVisible = localStorage.getItem('lyricsVisible') !== 'false';
     let isPlayerVisible = false;
+    let lyricsUpdateInterval = null;
 
     // 初始化所有功能
     function initAllFeatures() {
@@ -157,6 +158,46 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       lyricsVisible = !lyricsVisible;
       localStorage.setItem('lyricsVisible', lyricsVisible.toString());
       updateLyricsDisplay();
+      
+      // 如果切换为显示，强制更新一次歌词
+      if (lyricsVisible) {
+        const aplayer = getAPlayerInstance();
+        if (aplayer && aplayer.lrc) {
+          forceUpdateLyrics(aplayer);
+        }
+      }
+    }
+
+    // 强制更新歌词显示
+    function forceUpdateLyrics(aplayer) {
+      if (!aplayer.lrc || !lyricsVisible) return;
+      
+      try {
+        const currentTime = aplayer.audio.currentTime;
+        const lrcData = aplayer.lrc;
+        
+        if (lrcData && lrcData.lrc) {
+          // 查找当前时间对应的歌词
+          let currentText = '';
+          let nextText = '';
+          let prevTime = 0;
+          
+          // 遍历歌词数据找到当前和下一句
+          const times = Object.keys(lrcData.lrc).map(Number).sort((a, b) => a - b);
+          for (let i = 0; i < times.length; i++) {
+            if (currentTime >= times[i]) {
+              currentText = lrcData.lrc[times[i]] || '';
+              if (i < times.length - 1) {
+                nextText = lrcData.lrc[times[i + 1]] || '';
+              }
+            }
+          }
+          
+          updateLyrics(currentText, nextText);
+        }
+      } catch (error) {
+        console.log('强制更新歌词失败:', error);
+      }
     }
 
     // 更新歌词显示
@@ -165,6 +206,11 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       if (floatingLyrics) {
         if (lyricsVisible) {
           floatingLyrics.style.display = 'block';
+          // 显示时强制更新一次歌词
+          const aplayer = getAPlayerInstance();
+          if (aplayer) {
+            setTimeout(() => forceUpdateLyrics(aplayer), 100);
+          }
         } else {
           floatingLyrics.style.display = 'none';
           floatingLyrics.classList.remove('show');
@@ -343,6 +389,10 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       aplayer.on('play', function() {
         if (capsule) capsule.classList.add('playing');
         updateCover();
+        // 播放时强制更新歌词
+        if (lyricsVisible) {
+          setTimeout(() => forceUpdateLyrics(aplayer), 100);
+        }
       });
       
       aplayer.on('pause', function() {
@@ -357,6 +407,19 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       aplayer.on('loadeddata', updateCover);
       aplayer.on('listswitch', updateCover);
 
+      // 监听歌词相关事件
+      aplayer.on('lrcshow', function() {
+        console.log('歌词显示事件触发');
+        if (lyricsVisible) {
+          startEnhancedLyricsListener(aplayer);
+        }
+      });
+
+      aplayer.on('lrchide', function() {
+        console.log('歌词隐藏事件触发');
+        stopLyricsListener();
+      });
+
       // 更新胶囊封面
       function updateCover() {
         try {
@@ -369,7 +432,7 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
         }
       }
 
-      // 更新歌词显示 - 修复歌词获取逻辑
+      // 更新歌词显示
       function updateLyrics(current, next) {
         if (!currentLineEl || !nextLineEl || !lyricsVisible) return;
         
@@ -383,60 +446,111 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
         }
       }
 
-      // 监听歌词变化 - 修复歌词监听
-      function startLyricsListener() {
-        setInterval(() => {
-          if (!lyricsVisible) {
+      // 增强版歌词监听
+      function startEnhancedLyricsListener(aplayerInstance) {
+        // 清除之前的监听器
+        stopLyricsListener();
+        
+        console.log('开始增强歌词监听');
+        
+        lyricsUpdateInterval = setInterval(() => {
+          if (!lyricsVisible || !aplayerInstance) {
             updateLyrics('', '');
             return;
           }
           
-          // 尝试从多个位置获取歌词
-          let lrcContainer = document.querySelector('.aplayer-lrc');
-          if (!lrcContainer) {
-            // 如果找不到歌词容器，尝试从播放器内部查找
-            const aplayerEl = document.querySelector('.aplayer');
-            if (aplayerEl) {
-              lrcContainer = aplayerEl.querySelector('.aplayer-lrc');
-            }
-          }
-          
-          if (!lrcContainer) {
-            updateLyrics('', '');
-            return;
-          }
-          
-          const currentLrc = lrcContainer.querySelector('p.aplayer-lrc-current');
-          const allLrcLines = lrcContainer.querySelectorAll('p');
-          
-          if (currentLrc && currentLrc.textContent && currentLrc.textContent.trim()) {
-            const currentText = currentLrc.textContent.trim();
-            let nextText = '';
-            
-            // 找到下一句歌词
-            for (let i = 0; i < allLrcLines.length; i++) {
-              if (allLrcLines[i] === currentLrc && i < allLrcLines.length - 1) {
-                const nextLrc = allLrcLines[i + 1];
-                if (nextLrc && nextLrc.textContent) {
-                  nextText = nextLrc.textContent.trim();
+          try {
+            // 方法1: 直接从APlayer实例获取歌词数据
+            if (aplayerInstance.lrc && aplayerInstance.lrc.lrc) {
+              const currentTime = aplayerInstance.audio.currentTime;
+              const lrcData = aplayerInstance.lrc.lrc;
+              
+              let currentText = '';
+              let nextText = '';
+              let foundCurrent = false;
+              
+              // 获取所有时间点并排序
+              const times = Object.keys(lrcData).map(Number).sort((a, b) => a - b);
+              
+              for (let i = 0; i < times.length; i++) {
+                if (currentTime >= times[i]) {
+                  currentText = lrcData[times[i]] || '';
+                  foundCurrent = true;
+                  
+                  // 找下一句歌词
+                  if (i < times.length - 1) {
+                    nextText = lrcData[times[i + 1]] || '';
+                  }
+                } else if (foundCurrent) {
+                  break;
                 }
-                break;
               }
+              
+              if (currentText !== currentLyric) {
+                currentLyric = currentText;
+                updateLyrics(currentText, nextText);
+              }
+              return;
             }
             
-            if (currentText !== currentLyric) {
-              currentLyric = currentText;
-              updateLyrics(currentText, nextText);
+            // 方法2: 从DOM元素获取歌词
+            let lrcContainer = document.querySelector('.aplayer-lrc') || 
+                              document.querySelector('.aplayer-lrc-contents') ||
+                              document.querySelector('.aplayer .aplayer-lrc-contents');
+            
+            if (lrcContainer) {
+              const currentLrc = lrcContainer.querySelector('p.aplayer-lrc-current');
+              const allLrcLines = lrcContainer.querySelectorAll('p');
+              
+              if (currentLrc && currentLrc.textContent && currentLrc.textContent.trim()) {
+                const currentText = currentLrc.textContent.trim();
+                let nextText = '';
+                
+                // 找到下一句歌词
+                for (let i = 0; i < allLrcLines.length; i++) {
+                  if (allLrcLines[i] === currentLrc && i < allLrcLines.length - 1) {
+                    const nextLrc = allLrcLines[i + 1];
+                    if (nextLrc && nextLrc.textContent) {
+                      nextText = nextLrc.textContent.trim();
+                    }
+                    break;
+                  }
+                }
+                
+                if (currentText !== currentLyric) {
+                  currentLyric = currentText;
+                  updateLyrics(currentText, nextText);
+                }
+              } else {
+                updateLyrics('', '');
+                currentLyric = '';
+              }
+            } else {
+              updateLyrics('', '');
+              currentLyric = '';
             }
-          } else {
+          } catch (error) {
+            console.log('歌词监听错误:', error);
             updateLyrics('', '');
-            currentLyric = '';
           }
-        }, 200); // 降低检查频率
+        }, 150); // 优化检查频率
       }
 
-      // 开始监听歌词
-      startLyricsListener();
+      // 停止歌词监听
+      function stopLyricsListener() {
+        if (lyricsUpdateInterval) {
+          clearInterval(lyricsUpdateInterval);
+          lyricsUpdateInterval = null;
+        }
+      }
+
+      // 初始启动歌词监听
+      if (lyricsVisible) {
+        setTimeout(() => {
+          startEnhancedLyricsListener(aplayer);
+        }, 1000);
+      }
+      
       // 初始更新歌词显示状态
       updateLyricsDisplay();
     }
@@ -666,12 +780,19 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
                 setTimeout(() => {
                   aplayer.container.setAttribute('data-initialized', 'true');
                   
-                  if (config.player?.lrcHidden && aplayer.lrc) {
-                    aplayer.lrc.hide();
-                    const lrcButton = aplayer.container.querySelector('.aplayer-icon-lrc');
-                    if (lrcButton) {
-                      lrcButton.classList.add('aplayer-icon-lrc-inactivity');
-                    }
+                  // 确保歌词功能正确初始化
+                  if (config.player?.lrcType !== 0 && aplayer.lrc) {
+                    setTimeout(() => {
+                      if (aplayer.lrc) {
+                        aplayer.lrc.show();
+                        // 确保歌词容器可见
+                        const lrcContainer = aplayer.container.querySelector('.aplayer-lrc');
+                        if (lrcContainer) {
+                          lrcContainer.style.display = 'block';
+                        }
+                        console.log('歌词功能已初始化');
+                      }
+                    }, 500);
                   }
                   
                   if (config.player?.autoplay && aplayer.paused) {
@@ -874,12 +995,18 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
               setTimeout(() => {
                 aplayer.container.setAttribute('data-initialized', 'true');
                 
-                if (config.player?.lrcHidden && aplayer.lrc) {
-                  aplayer.lrc.hide();
-                  const lrcButton = aplayer.container.querySelector('.aplayer-icon-lrc');
-                  if (lrcButton) {
-                    lrcButton.classList.add('aplayer-icon-lrc-inactivity');
-                  }
+                // 确保歌词功能正确初始化
+                if (config.player?.lrcType !== 0 && aplayer.lrc) {
+                  setTimeout(() => {
+                    if (aplayer.lrc) {
+                      aplayer.lrc.show();
+                      const lrcContainer = aplayer.container.querySelector('.aplayer-lrc');
+                      if (lrcContainer) {
+                        lrcContainer.style.display = 'block';
+                      }
+                      console.log('本地播放器歌词功能已初始化');
+                    }
+                  }, 500);
                 }
                 
                 if (config.player?.autoplay && aplayer.paused) {
@@ -922,6 +1049,20 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
         });
       }
     }
+
+    // 调试函数
+    window.debugLyrics = function() {
+      const aplayer = getAPlayerInstance();
+      console.log('=== 歌词调试信息 ===');
+      console.log('APlayer实例:', aplayer);
+      console.log('歌词实例:', aplayer ? aplayer.lrc : '无播放器');
+      console.log('歌词数据:', aplayer && aplayer.lrc ? aplayer.lrc.lrc : '无歌词数据');
+      console.log('歌词容器:', document.querySelector('.aplayer-lrc'));
+      console.log('浮动歌词元素:', document.getElementById('floating-lyrics'));
+      console.log('歌词显示状态:', lyricsVisible);
+      console.log('当前歌词:', document.querySelector('.current-line')?.textContent);
+      console.log('==================');
+    };
   })();
 </script>
 
