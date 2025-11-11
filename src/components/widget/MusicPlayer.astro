@@ -80,6 +80,7 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     let aplayer = null;
     let lyricsInterval = null;
     let currentLyric = '';
+    let lyricsEnabled = false;
 
     // DOM 引用
     const capsule = document.getElementById('music-capsule');
@@ -125,6 +126,8 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
           metingEl.setAttribute('mutex', config.player?.mutex !== false ? 'true' : 'false');
           // 强制启用歌词
           metingEl.setAttribute('lrc-type', '3');
+          metingEl.setAttribute('showlrc', '1');
+          metingEl.setAttribute('lrc', '1');
           metingEl.setAttribute('list-folded', config.player?.listFolded ? 'true' : 'false');
           metingEl.setAttribute('list-max-height', config.player?.listMaxHeight || '340px');
           metingEl.setAttribute('storage-name', config.player?.storageName || 'aplayer-setting');
@@ -143,6 +146,16 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
             aplayer = metingEl.aplayer;
             handled = true;
             console.log('APlayer 实例已创建:', aplayer);
+            
+            // 强制启用歌词显示
+            setTimeout(() => {
+              if (aplayer.lrc && typeof aplayer.lrc.show === 'function') {
+                aplayer.lrc.show();
+                lyricsEnabled = true;
+                console.log('歌词显示已启用');
+              }
+            }, 1000);
+            
             bindAPlayerEvents(aplayer);
             resolve(aplayer);
           }
@@ -183,7 +196,27 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
         }
       }
       
-      ap.on('loadeddata', updateCover);
+      ap.on('loadeddata', function() {
+        console.log('音频数据加载完成');
+        updateCover();
+        
+        // 检查歌词状态
+        setTimeout(() => {
+          console.log('当前歌词状态:', {
+            hasLrc: !!ap.lrc,
+            lrcType: ap.options.lrcType,
+            lrcVisible: lyricsVisible,
+            lyricsEnabled: lyricsEnabled
+          });
+          
+          // 强制显示歌词
+          if (ap.lrc && typeof ap.lrc.show === 'function' && !lyricsEnabled) {
+            ap.lrc.show();
+            lyricsEnabled = true;
+          }
+        }, 500);
+      });
+      
       ap.on('listswitch', updateCover);
       ap.on('play', ()=> {
         console.log('播放开始');
@@ -205,10 +238,12 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       // 监听歌词相关事件
       ap.on('lrcshow', function() {
         console.log('歌词显示事件触发');
+        lyricsEnabled = true;
       });
       
       ap.on('lrchide', function() {
         console.log('歌词隐藏事件触发');
+        lyricsEnabled = false;
       });
     }
 
@@ -232,26 +267,46 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
           return;
         }
         
-        // 方法1: 从DOM获取歌词
+        console.log('尝试获取歌词...');
+        
+        // 方法1: 从多个可能的DOM位置获取歌词
         let lrcContainer = document.querySelector('.aplayer-lrc');
         if (!lrcContainer) {
-          // 等待歌词容器加载
-          setTimeout(() => {
-            lrcContainer = document.querySelector('.aplayer-lrc');
-            if (!lrcContainer) {
-              if (floatingLyrics) floatingLyrics.classList.remove('show');
-            }
-          }, 100);
+          lrcContainer = document.querySelector('.aplayer-lrc-contents');
+        }
+        if (!lrcContainer) {
+          lrcContainer = document.querySelector('[class*="lrc"]');
+        }
+        
+        if (!lrcContainer) {
+          console.log('未找到歌词容器，尝试从APlayer数据获取...');
+          // 如果APlayer已初始化但歌词容器不存在，从数据获取
+          tryParseLyricsFromAPlayer(ap);
+          return;
+        }
+        
+        console.log('找到歌词容器:', lrcContainer);
+        
+        // 检查歌词容器是否可见
+        const style = window.getComputedStyle(lrcContainer);
+        if (style.display === 'none' || style.visibility === 'hidden') {
+          console.log('歌词容器被隐藏');
+          if (ap && ap.lrc && typeof ap.lrc.show === 'function') {
+            ap.lrc.show();
+          }
           return;
         }
         
         const currentLrc = lrcContainer.querySelector('p.aplayer-lrc-current');
         const allLrcLines = lrcContainer.querySelectorAll('p');
         
+        console.log('歌词行数量:', allLrcLines.length);
+        
         if (currentLrc && currentLrc.textContent && currentLrc.textContent.trim()) {
           const currentText = currentLrc.textContent.trim();
           let nextText = '';
           
+          // 查找下一行歌词
           for (let i = 0; i < allLrcLines.length; i++) {
             if (allLrcLines[i] === currentLrc && i < allLrcLines.length - 1) {
               const nextLrc = allLrcLines[i + 1];
@@ -262,52 +317,72 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
             }
           }
           
-          console.log('找到歌词:', { current: currentText, next: nextText });
+          console.log('成功获取歌词:', { current: currentText, next: nextText });
           showLyricsWithEffect(currentText, nextText);
         } else {
-          // 方法2: 直接从APlayer实例获取
-          if (ap && ap.lrc) {
-            try {
-              const currentTime = ap.audio.currentTime;
-              const lrcData = ap.lrc;
-              
-              if (lrcData && lrcData.lrc) {
-                let currentText = '';
-                let nextText = '';
-                
-                const times = Object.keys(lrcData.lrc).map(Number).sort((a, b) => a - b);
-                
-                for (let i = 0; i < times.length; i++) {
-                  if (currentTime >= times[i]) {
-                    currentText = lrcData.lrc[times[i]] || '';
-                    
-                    if (i < times.length - 1) {
-                      nextText = lrcData.lrc[times[i + 1]] || '';
-                    }
-                  } else {
-                    break;
-                  }
-                }
-                
-                if (currentText && currentText.trim()) {
-                  console.log('从APlayer实例获取歌词:', { current: currentText, next: nextText });
-                  showLyricsWithEffect(currentText, nextText);
-                  return;
-                }
-              }
-            } catch (e) {
-              console.log('从APlayer实例获取歌词失败:', e);
-            }
-          }
-          
-          if (floatingLyrics) floatingLyrics.classList.remove('show');
-          currentLyric = '';
+          // 方法2: 直接解析APlayer歌词数据
+          tryParseLyricsFromAPlayer(ap);
         }
       } catch (error) {
-        console.log('歌词监听错误:', error);
+        console.error('歌词监听错误:', error);
         if (floatingLyrics) floatingLyrics.classList.remove('show');
         currentLyric = '';
       }
+    }
+
+    // 直接从APlayer实例解析歌词
+    function tryParseLyricsFromAPlayer(ap) {
+      if (!ap || !ap.lrc) {
+        console.log('APlayer实例或歌词数据不存在');
+        return false;
+      }
+      
+      try {
+        const currentTime = ap.audio.currentTime;
+        console.log('当前播放时间:', currentTime);
+        
+        // 检查歌词数据格式
+        if (ap.lrc.lrc && typeof ap.lrc.lrc === 'object') {
+          const lrcObj = ap.lrc.lrc;
+          const times = Object.keys(lrcObj).map(Number).sort((a, b) => a - b);
+          
+          console.log('歌词时间点数量:', times.length);
+          
+          let currentText = '';
+          let nextText = '';
+          let foundCurrent = false;
+          
+          for (let i = 0; i < times.length; i++) {
+            if (currentTime >= times[i]) {
+              currentText = lrcObj[times[i]] || '';
+              foundCurrent = true;
+              
+              if (i < times.length - 1) {
+                nextText = lrcObj[times[i + 1]] || '';
+              }
+            } else if (foundCurrent) {
+              break;
+            }
+          }
+          
+          if (currentText && currentText.trim()) {
+            console.log('从APlayer数据解析歌词:', { current: currentText, next: nextText });
+            showLyricsWithEffect(currentText, nextText);
+            return true;
+          }
+        }
+        
+        // 如果上面的方法不行，尝试其他格式
+        if (ap.lrc.text && typeof ap.lrc.text === 'string') {
+          console.log('找到文本格式歌词');
+          // 这里可以添加文本歌词解析逻辑
+        }
+        
+      } catch (e) {
+        console.log('从APlayer实例解析歌词失败:', e);
+      }
+      
+      return false;
     }
 
     function showLyricsWithEffect(currentText, nextText) {
@@ -361,6 +436,11 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
         if (floatingLyrics) floatingLyrics.classList.add('show');
         if (aplayer && !aplayer.audio.paused) {
           startLyricsUpdate(aplayer);
+        }
+        // 强制显示APlayer歌词
+        if (aplayer && aplayer.lrc && typeof aplayer.lrc.show === 'function') {
+          aplayer.lrc.show();
+          lyricsEnabled = true;
         }
       } else {
         if (floatingLyrics) {
@@ -443,7 +523,32 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
         capsule.addEventListener('click', ()=>{
           if (playerWrap) {
             playerWrap.classList.add('show');
-            initMeting().catch(()=>{});
+            initMeting().then(ap => {
+              console.log('APlayer初始化完成');
+              
+              // 调试信息
+              setTimeout(() => {
+                console.log('=== APlayer调试信息 ===');
+                console.log('APlayer实例:', ap);
+                console.log('歌词选项:', ap.options.lrcType);
+                console.log('歌词对象:', ap.lrc);
+                console.log('当前音频:', ap.list.audios[ap.list.index]);
+                
+                // 检查DOM中的歌词元素
+                const lrcElements = document.querySelectorAll('[class*="lrc"]');
+                console.log('找到的歌词相关元素:', lrcElements);
+                
+                lrcElements.forEach((el, index) => {
+                  console.log(`歌词元素 ${index}:`, {
+                    className: el.className,
+                    display: window.getComputedStyle(el).display,
+                    content: el.textContent
+                  });
+                });
+              }, 2000);
+            }).catch((err)=>{
+              console.log('APlayer初始化失败:', err);
+            });
           }
         });
       }
@@ -496,9 +601,9 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       // 预初始化
       setTimeout(() => {
         initMeting().then(ap=>{
-          console.log('APlayer初始化完成');
+          console.log('APlayer预初始化完成');
         }).catch((err)=>{
-          console.log('APlayer初始化失败:', err);
+          console.log('APlayer预初始化失败:', err);
         });
       }, 1000);
     });
@@ -585,6 +690,16 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   .aplayer .aplayer-lrc p { 
     color: orange !important; 
     font-weight: 700; 
+  }
+
+  /* 强制歌词容器显示 */
+  .aplayer-lrc {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  .aplayer-lrc-contents {
+    display: block !important;
   }
 
   /* ===== 音乐播放器样式修改 ===== */
