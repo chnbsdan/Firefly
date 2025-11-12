@@ -11,17 +11,29 @@ console.log('获取到的文章:', posts.map(p => ({
   title: p.data.title,
   slug: p.slug,
   published: p.data.published,
+  date: p.data.date,
+  pubDate: p.data.pubDate,
   draft: p.data.draft
 })));
 
-// 按发布时间排序 - 修正字段名
+// 按发布时间排序 - 优先级：pubDate > date > published
 posts = posts.sort((a, b) => {
-  const dateA = new Date(a.data.published || a.data.pubDate); // 优先使用 published
-  const dateB = new Date(b.data.published || b.data.pubDate);
-  return dateB.getTime() - dateA.getTime();
+  const getDate = (post) => {
+    // 按优先级选择日期字段
+    if (post.data.pubDate) return new Date(post.data.pubDate);
+    if (post.data.date) return new Date(post.data.date);
+    if (post.data.published) return new Date(post.data.published);
+    return new Date(0); // 如果没有日期，返回最早日期
+  };
+  
+  const dateA = getDate(a);
+  const dateB = getDate(b);
+  return dateB.getTime() - dateA.getTime(); // 降序排列，最新的在前
 });
 
-const recentPosts = posts.slice(0, 5);
+// 过滤掉草稿文章
+const publishedPosts = posts.filter(post => !post.data.draft);
+const recentPosts = publishedPosts.slice(0, 5);
 
 function getRelativeTime(date) {
   const now = new Date();
@@ -33,6 +45,14 @@ function getRelativeTime(date) {
   if (diffDays <= 7) return `${diffDays}天前`;
   if (diffDays <= 30) return `${Math.ceil(diffDays / 7)}周前`;
   return `${Math.ceil(diffDays / 30)}月前`;
+}
+
+function getDisplayDate(post) {
+  // 按优先级选择显示的日期
+  if (post.data.pubDate) return post.data.pubDate;
+  if (post.data.date) return post.data.date;
+  if (post.data.published) return post.data.published;
+  return post.data.published; // 默认返回 published
 }
 
 interface Props {
@@ -49,8 +69,9 @@ const style = Astro.props.style;
     {recentPosts.length > 0 ? (
       recentPosts.map((post, index) => {
         const isNew = index === 0;
+        const displayDate = getDisplayDate(post);
         // 检查是否是一周内发布的文章
-        const isRecent = new Date(post.data.published) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        const isRecent = new Date(displayDate) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
         
         return (
           <ButtonLink
@@ -63,7 +84,7 @@ const style = Astro.props.style;
                 {post.data.title}
               </span>
               <span class="text-xs text-gray-500 dark:text-gray-400">
-                {getRelativeTime(post.data.published)}
+                {getRelativeTime(displayDate)}
               </span>
             </div>
           </ButtonLink>
