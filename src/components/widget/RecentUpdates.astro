@@ -5,9 +5,19 @@ import WidgetLayout from "./WidgetLayout.astro";
 
 // 获取最新的文章
 let posts = await getCollection('blog');
+
+// 调试：打印获取到的文章信息
+console.log('获取到的文章:', posts.map(p => ({
+  title: p.data.title,
+  slug: p.slug,
+  published: p.data.published,
+  draft: p.data.draft
+})));
+
+// 按发布时间排序 - 修正字段名
 posts = posts.sort((a, b) => {
-  const dateA = new Date(a.data.updatedDate || a.data.pubDate);
-  const dateB = new Date(b.data.updatedDate || b.data.pubDate);
+  const dateA = new Date(a.data.published || a.data.pubDate); // 优先使用 published
+  const dateB = new Date(b.data.published || b.data.pubDate);
   return dateB.getTime() - dateA.getTime();
 });
 
@@ -39,13 +49,13 @@ const style = Astro.props.style;
     {recentPosts.length > 0 ? (
       recentPosts.map((post, index) => {
         const isNew = index === 0;
-        const isUpdated = post.data.updatedDate && 
-          new Date(post.data.updatedDate) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        // 检查是否是一周内发布的文章
+        const isRecent = new Date(post.data.published) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
         
         return (
           <ButtonLink
             url={`/blog/${post.slug}`}
-            badge={isNew ? "新" : (isUpdated ? "更新" : "")}
+            badge={isNew ? "新" : (isRecent ? "最新" : "")}
             label={`阅读文章: ${post.data.title}`}
           >
             <div class="flex flex-col items-start gap-1">
@@ -53,7 +63,7 @@ const style = Astro.props.style;
                 {post.data.title}
               </span>
               <span class="text-xs text-gray-500 dark:text-gray-400">
-                {getRelativeTime(post.data.updatedDate || post.data.pubDate)}
+                {getRelativeTime(post.data.published)}
               </span>
             </div>
           </ButtonLink>
