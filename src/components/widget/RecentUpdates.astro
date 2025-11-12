@@ -3,21 +3,17 @@ import { getCollection } from 'astro:content';
 import ButtonLink from "@/components/control/ButtonLink.astro";
 import WidgetLayout from "./WidgetLayout.astro";
 
-// 从 posts 集合获取文章（不是 blog）
+// 从 posts 集合获取文章
 let posts = await getCollection('posts');
 
-console.log('=== 近期更新组件调试信息 ===');
-console.log('从 posts 集合获取到的文章:', posts);
-console.log('文章数量:', posts.length);
-
-if (posts.length > 0) {
-  console.log('文章详情:', posts.map(p => ({
-    title: p.data.title,
-    slug: p.slug,
-    published: p.data.published,
-    draft: p.data.draft
-  })));
-}
+// 调试封面图片信息
+console.log('=== 封面图片调试信息 ===');
+posts.forEach(post => {
+  console.log(`文章: ${post.data.title}`, {
+    image: post.data.image,
+    hasImage: !!post.data.image
+  });
+});
 
 // 按发布时间排序
 posts = posts.sort((a, b) => {
@@ -36,12 +32,6 @@ posts = posts.sort((a, b) => {
 // 过滤掉草稿文章
 const publishedPosts = posts.filter(post => !post.data.draft);
 const recentPosts = publishedPosts.slice(0, 5);
-
-console.log('处理结果:', {
-  总文章数: posts.length,
-  已发布文章数: publishedPosts.length,
-  显示文章数: recentPosts.length
-});
 
 function getRelativeTime(date) {
   const now = new Date();
@@ -70,7 +60,7 @@ const className = Astro.props.class;
 const style = Astro.props.style;
 ---
 
-<WidgetLayout name="近期更新" id="recent-updates" isCollapsed={false} collapsedHeight="7.5rem"
+<WidgetLayout name="近期更新" id="recent-updates" isCollapsed={false} collapsedHeight="10rem"
                 class={className} style={style}
 >
     {recentPosts.length > 0 ? (
@@ -78,6 +68,7 @@ const style = Astro.props.style;
         const isNew = index === 0;
         const displayDate = getDisplayDate(post);
         const isRecent = new Date(displayDate) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        const coverImage = post.data.image; // 直接使用 image 字段
         
         return (
           <ButtonLink
@@ -85,13 +76,29 @@ const style = Astro.props.style;
             badge={isNew ? "新" : (isRecent ? "最新" : "")}
             label={`阅读文章: ${post.data.title}`}
           >
-            <div class="flex flex-col items-start gap-1">
-              <span class="text-sm font-medium leading-tight text-left">
-                {post.data.title}
-              </span>
-              <span class="text-xs text-gray-500 dark:text-gray-400">
-                {getRelativeTime(displayDate)}
-              </span>
+            <div class="flex items-start gap-3 w-full">
+              <!-- 封面图片 -->
+              {coverImage && (
+                <div class="flex-shrink-0 w-12 h-12 rounded-md overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800">
+                  <img 
+                    src={coverImage} 
+                    alt={post.data.title}
+                    class="w-full h-full object-cover"
+                    loading="lazy"
+                    onerror="this.style.display='none'" <!-- 图片加载失败时隐藏 -->
+                  />
+                </div>
+              )}
+              
+              <!-- 文字内容 -->
+              <div class="flex-1 min-w-0">
+                <span class="text-sm font-medium leading-tight text-left block line-clamp-2">
+                  {post.data.title}
+                </span>
+                <span class="text-xs text-gray-500 dark:text-gray-400 block mt-1">
+                  {getRelativeTime(displayDate)}
+                </span>
+              </div>
             </div>
           </ButtonLink>
         );
@@ -102,3 +109,12 @@ const style = Astro.props.style;
       </div>
     )}
 </WidgetLayout>
+
+<style>
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+</style>
