@@ -3,7 +3,7 @@ title: Markdown 扩展功能
 published: 2024-05-01
 updated: 2024-11-29
 description: '了解 Firefly 中的 Markdown 功能'
-image: ''
+image: 'https://uapis.cn/api/v1/random/image?category=acg&type=pc'
 tags: [演示, 示例, Markdown, Firefly]
 category: '文章示例'
 draft: false 
