@@ -1,0 +1,169 @@
+---
+import { getCollection } from 'astro:content';
+
+// 获取最新的文章
+let posts = await getCollection('blog');
+// 按更新时间排序（优先使用updatedDate，没有则使用pubDate）
+posts = posts.sort((a, b) => {
+  const dateA = new Date(a.data.updatedDate || a.data.pubDate);
+  const dateB = new Date(b.data.updatedDate || b.data.pubDate);
+  return dateB.getTime() - dateA.getTime();
+});
+
+const recentPosts = posts.slice(0, 5); // 显示最近5篇
+
+// 计算相对时间
+function getRelativeTime(date) {
+  const now = new Date();
+  const diffTime = Math.abs(now - new Date(date));
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  if (diffDays === 1) return '今天';
+  if (diffDays === 2) return '昨天';
+  if (diffDays <= 7) return `${diffDays}天前`;
+  if (diffDays <= 30) return `${Math.ceil(diffDays / 7)}周前`;
+  return `${Math.ceil(diffDays / 30)}月前`;
+}
+---
+
+<div class="widget-card">
+  <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+    <span class="text-xl">🔄</span>
+    近期更新
+  </h3>
+  
+  <div class="updates-list">
+    {recentPosts.length > 0 ? (
+      recentPosts.map((post, index) => {
+        const isNew = index === 0; // 最新的一篇标记为新文章
+        const isUpdated = post.data.updatedDate && 
+          new Date(post.data.updatedDate) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // 一周内更新
+        
+        return (
+          <a 
+            href={`/blog/${post.slug}`} 
+            class="update-item block no-underline"
+            title={post.data.title}
+          >
+            <div class="update-header">
+              <span class="post-title">{post.data.title}</span>
+              <div class="badges flex gap-1">
+                {isNew && <span class="badge new">新</span>}
+                {isUpdated && !isNew && <span class="badge updated">更新</span>}
+              </div>
+            </div>
+            <div class="update-meta">
+              <span class="update-time">
+                {getRelativeTime(post.data.updatedDate || post.data.pubDate)}
+              </span>
+            </div>
+          </a>
+        );
+      })
+    ) : (
+      <div class="text-center py-4 text-gray-500 dark:text-gray-400">
+        <p>暂无文章更新</p>
+      </div>
+    )}
+  </div>
+</div>
+
+<style>
+.widget-card {
+  background: var(--card-bg, #ffffff);
+  border-radius: 12px;
+  padding: 1.25rem;
+  border: 1px solid var(--border-color, #e5e7eb);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.widget-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.updates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.update-item {
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  transition: all 0.2s ease;
+  color: inherit;
+}
+
+.update-item:hover {
+  background: var(--hover-bg, #f8fafc);
+  border-color: var(--accent-color, #3b82f6);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.update-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  gap: 0.5rem;
+}
+
+.post-title {
+  font-weight: 600;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.badges {
+  flex-shrink: 0;
+}
+
+.badge {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge.new {
+  background: #dc3545;
+  color: white;
+}
+
+.badge.updated {
+  background: #fd7e14;
+  color: white;
+}
+
+.update-meta {
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--text-muted, #6b7280);
+}
+
+.update-time {
+  font-size: 0.7rem;
+}
+
+/* 暗色模式支持 */
+@media (prefers-color-scheme: dark) {
+  .widget-card {
+    background: var(--card-bg, #1f2937);
+    border-color: var(--border-color, #374151);
+  }
+  
+  .update-item:hover {
+    background: var(--hover-bg, #374151);
+  }
+}
+</style>
