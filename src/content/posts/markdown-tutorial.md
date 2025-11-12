@@ -9,7 +9,7 @@ licenseName: "未授权"
 author: emn178
 sourceLink: "https://github.com/emn178/markdown"
 draft: false
-image: "https://uapis.cn/api/v1/random/image?category=acg&type=pc"
+image: "api"
 ---
 
 # Markdown 教程
