@@ -7,7 +7,7 @@ tags: [示例,博客指南]
 category: "经典收藏"
 licenseName: "CC BY 4.0"
 author: "小史先森"
-sourceLink: "https://blog.1356666.xyz"
+sourceLink: "https://fly.hangdn.com"
 draft: false
 date: 2025-6-08
 # 修改这里：将对象改为字符串
@@ -27,28 +27,137 @@ Markdown列表：
 - 项目2
 - 项目3
 
+# 现代化卡片展示
+
 <style>
 .card-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 16px;
-    margin: 20px 0;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    margin: 30px 0;
 }
 
-.card {
-    background: white;
-    border: 1px solid #d0d7de;
-    border-radius: 6px;
-    padding: 16px;
+.modern-card {
+    background: linear-gradient(145deg, #ffffff, #f8fafc);
+    border: none;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 
+        0 4px 20px rgba(0,0,0,0.08),
+        0 2px 8px rgba(0,0,0,0.04);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
 }
 
-.highlight {
-    background: #f6f8fa;
-    padding: 16px;
-    border-radius: 6px;
-    margin: 20px 0;
+.modern-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.modern-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 
+        0 20px 40px rgba(0,0,0,0.12),
+        0 8px 24px rgba(0,0,0,0.08);
+}
+
+.card-icon {
+    font-size: 2.5em;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.card-title {
+    font-size: 1.3em;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+    color: #1a202c;
+}
+
+.card-content {
+    color: #4a5568;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.glow-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.glow-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modern-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.modern-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.modern-card:nth-child(3) {
+    animation-delay: 0.2s;
 }
 </style>
+
+<div class="card-container">
+<div class="modern-card">
+<div class="card-icon">🚀</div>
+<h3 class="card-title">极致性能</h3>
+<p class="card-content">采用最新技术栈，确保应用运行流畅，响应迅速，为用户提供无缝体验。</p>
+<button class="glow-button">了解更多</button>
+</div>
+
+<div class="modern-card">
+<div class="card-icon">🎨</div>
+<h3 class="card-title">现代设计</h3>
+<p class="card-content">简洁美观的界面设计，精心调校的动画效果，让每一次交互都充满愉悦。</p>
+<button class="glow-button">探索设计</button>
+</div>
+
+<div class="modern-card">
+<div class="card-icon">⚡</div>
+<h3 class="card-title">快速开发</h3>
+<p class="card-content">完善的组件库和开发工具，大幅提升开发效率，快速构建高质量应用。</p>
+<button class="glow-button">开始使用</button>
+</div>
+</div>
+
+## 特性亮点
+
+这些卡片具有：
+- **悬浮效果**：鼠标悬停时优雅上浮
+- **渐变边框**：顶部彩色渐变装饰
+- **柔和阴影**：多层阴影营造深度感
+- **流畅动画**：入场动画和交互反馈
+- **现代化配色**：精心挑选的渐变色彩
 
 <div class="highlight">
 <strong>💡 提示框</strong>：这里是使用HTML和CSS增强的内容区域
