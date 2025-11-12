@@ -207,7 +207,7 @@ pubDate: 2025-11-11
     
           
          
-<h2 class="section-title">1-10</h2>
+# 1-10
 <div class="quotes-container">
 <div class="quote-card">
 <div class="quote-number">1</div>
@@ -251,7 +251,7 @@ pubDate: 2025-11-11
 </div>
 </div>
         
-<h2 class="section-title">11-20</h2>
+# 11-20
 <div class="quotes-container">
 <div class="quote-card">
 <div class="quote-number">11</div>
@@ -295,7 +295,7 @@ pubDate: 2025-11-11
 </div>
 </div>
         
-<h2 class="section-title">21-30</h2>
+# 21-30
 <div class="quotes-container">
 <div class="quote-card">
 <div class="quote-number">21</div>
@@ -339,7 +339,7 @@ pubDate: 2025-11-11
 </div>
 </div>
 
-<h2 class="section-title">31-40</h2>
+# 31-40
 <div class="quotes-container">
 <div class="quote-card">
 <div class="quote-number">31</div>
@@ -383,7 +383,7 @@ pubDate: 2025-11-11
 </div>
 </div>
 
-<h2 class="section-title">41-50</h2>
+# 41-50
 <div class="quotes-container">
 <div class="quote-card">
 <div class="quote-number">41</div>
@@ -427,7 +427,7 @@ pubDate: 2025-11-11
 </div>
 </div>
 
-<h2 class="section-title">51-60</h2>
+# 51-60
 <div class="quotes-container">
 <div class="quote-card">
 <div class="quote-number">51</div>
@@ -471,7 +471,7 @@ pubDate: 2025-11-11
 </div>
 </div>
 
-<h2 class="section-title">61-70</h2>
+# 61-70
 <div class="quotes-container">
 <div class="quote-card">
 <div class="quote-number">61</div>
@@ -515,7 +515,7 @@ pubDate: 2025-11-11
 </div>
 </div>
 
-<h2 class="section-title">71-80</h2>
+# 71-80
 <div class="quotes-container">
 <div class="quote-card">
 <div class="quote-number">71</div>
@@ -559,7 +559,7 @@ pubDate: 2025-11-11
 </div>
 </div>
 
-<h2 class="section-title">81-90</h2>
+# 81-90
 <div class="quotes-container">
 <div class="quote-card">
 <div class="quote-number">81</div>
@@ -601,7 +601,7 @@ pubDate: 2025-11-11
 <div class="quote-number">90</div>
 <p class="quote-text">那些成长的磨砺、奋斗的汗水，都将化作你的底气和格局，累积成你向上攀爬的阶梯，支撑着你看到更高处的风景。</p>
 </div>
-<h2 class="section-title">91-100</h2>
+# 91-100
 <div class="quotes-container">
 <div class="quote-card">
 <div class="quote-number">91</div>
