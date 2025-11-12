@@ -6,14 +6,43 @@ import WidgetLayout from "./WidgetLayout.astro";
 // 从 posts 集合获取文章
 let posts = await getCollection('posts');
 
-// 调试封面图片信息
-console.log('=== 封面图片调试信息 ===');
-posts.forEach(post => {
-  console.log(`文章: ${post.data.title}`, {
-    image: post.data.image,
-    hasImage: !!post.data.image
-  });
-});
+// 处理封面图片路径
+function getCoverImage(post) {
+  const imageField = post.data.image;
+  
+  console.log(`文章 "${post.data.title}" 的图片字段:`, imageField);
+  
+  // 如果是API字符串，返回空
+  if (imageField === 'api') {
+    console.log(`  -> 检测到API字段，返回空`);
+    return null;
+  }
+  
+  // 如果是相对路径 (./cover.webp)
+  if (imageField && imageField.startsWith('./')) {
+    const imageName = imageField.replace('./', '');
+    // 假设图片与文章在同一目录，构建相对路径
+    const imagePath = `/posts/${post.slug}/${imageName}`;
+    console.log(`  -> 相对路径转换: ${imageField} -> ${imagePath}`);
+    return imagePath;
+  }
+  
+  // 如果是相对路径 (cover.webp) - 没有 ./
+  if (imageField && !imageField.startsWith('/') && !imageField.startsWith('http') && !imageField.startsWith('./')) {
+    const imagePath = `/posts/${post.slug}/${imageField}`;
+    console.log(`  -> 相对路径转换: ${imageField} -> ${imagePath}`);
+    return imagePath;
+  }
+  
+  // 如果是绝对路径或完整URL，直接返回
+  if (imageField && (imageField.startsWith('/') || imageField.startsWith('http'))) {
+    console.log(`  -> 绝对路径或URL: ${imageField}`);
+    return imageField;
+  }
+  
+  console.log(`  -> 无法识别的图片格式，返回空`);
+  return null;
+}
 
 // 按发布时间排序
 posts = posts.sort((a, b) => {
@@ -33,6 +62,12 @@ posts = posts.sort((a, b) => {
 const publishedPosts = posts.filter(post => !post.data.draft);
 const recentPosts = publishedPosts.slice(0, 5);
 
+console.log('=== 近期更新组件处理结果 ===');
+console.log('总文章数:', posts.length);
+console.log('已发布文章数:', publishedPosts.length);
+console.log('显示文章数:', recentPosts.length);
+
+// 计算相对时间
 function getRelativeTime(date) {
   const now = new Date();
   const diffTime = Math.abs(now - new Date(date));
@@ -68,7 +103,7 @@ const style = Astro.props.style;
         const isNew = index === 0;
         const displayDate = getDisplayDate(post);
         const isRecent = new Date(displayDate) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-        const coverImage = post.data.image; // 直接使用 image 字段
+        const coverImage = getCoverImage(post);
         
         return (
           <ButtonLink
@@ -77,18 +112,22 @@ const style = Astro.props.style;
             label={`阅读文章: ${post.data.title}`}
           >
             <div class="flex items-start gap-3 w-full">
-              <!-- 封面图片 -->
-              {coverImage && (
-                <div class="flex-shrink-0 w-12 h-12 rounded-md overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800">
+              <!-- 封面图片区域 -->
+              <div class="flex-shrink-0 w-12 h-12 rounded-md overflow-hidden border border-gray-200 dark:border-gray-700 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900 flex items-center justify-center">
+                {coverImage ? (
                   <img 
                     src={coverImage} 
                     alt={post.data.title}
                     class="w-full h-full object-cover"
                     loading="lazy"
-                    onerror="this.style.display='none'" <!-- 图片加载失败时隐藏 -->
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
                   />
+                ) : null}
+                <!-- 占位图标 -->
+                <div class={`${coverImage ? 'hidden' : 'flex'} items-center justify-center w-full h-full`}>
+                  <span class="text-lg">📄</span>
                 </div>
-              )}
+              </div>
               
               <!-- 文字内容 -->
               <div class="flex-1 min-w-0">
