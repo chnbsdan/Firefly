@@ -1,6 +1,6 @@
 ---
 title: "金句摘录，100条励志句子欣赏"
-published: 2025-06-10
+published: 2025-11-10
 pinned: false
 description: "励志句子赏析，金句摘录，收藏，欢迎评论区分享好词好句子。"
 tags: [经典语录,博客指南]
