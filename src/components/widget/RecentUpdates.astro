@@ -3,37 +3,23 @@ import { getCollection } from 'astro:content';
 import ButtonLink from "@/components/control/ButtonLink.astro";
 import WidgetLayout from "./WidgetLayout.astro";
 
-// 获取最新的文章
-let posts = await getCollection('blog');
+// 从 posts 集合获取文章（不是 blog）
+let posts = await getCollection('posts');
 
-// 详细的调试信息
 console.log('=== 近期更新组件调试信息 ===');
-console.log('1. 获取到的文章集合:', posts);
-console.log('2. 文章数量:', posts.length);
-console.log('3. 每篇文章的详细信息:');
-posts.forEach((post, index) => {
-  console.log(`   文章 ${index + 1}:`, {
-    title: post.data.title,
-    slug: post.slug,
-    id: post.id,
-    published: post.data.published,
-    date: post.data.date,
-    pubDate: post.data.pubDate,
-    draft: post.data.draft,
-    collection: post.collection
-  });
-});
+console.log('从 posts 集合获取到的文章:', posts);
+console.log('文章数量:', posts.length);
 
-// 检查集合名称和内容目录
-console.log('4. 尝试获取所有集合:');
-try {
-  const allCollections = await getCollection();
-  console.log('   所有集合:', allCollections);
-} catch (e) {
-  console.log('   获取集合失败:', e);
+if (posts.length > 0) {
+  console.log('文章详情:', posts.map(p => ({
+    title: p.data.title,
+    slug: p.slug,
+    published: p.data.published,
+    draft: p.data.draft
+  })));
 }
 
-// 按发布时间排序 - 优先级：pubDate > date > published
+// 按发布时间排序
 posts = posts.sort((a, b) => {
   const getDate = (post) => {
     if (post.data.pubDate) return new Date(post.data.pubDate);
@@ -51,11 +37,10 @@ posts = posts.sort((a, b) => {
 const publishedPosts = posts.filter(post => !post.data.draft);
 const recentPosts = publishedPosts.slice(0, 5);
 
-console.log('5. 处理后的文章:', {
-  排序后文章数: posts.length,
-  过滤草稿后: publishedPosts.length,
-  最终显示: recentPosts.length,
-  最终文章列表: recentPosts.map(p => p.data.title)
+console.log('处理结果:', {
+  总文章数: posts.length,
+  已发布文章数: publishedPosts.length,
+  显示文章数: recentPosts.length
 });
 
 function getRelativeTime(date) {
@@ -94,10 +79,6 @@ const style = Astro.props.style;
         const displayDate = getDisplayDate(post);
         const isRecent = new Date(displayDate) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
         
-        console.log(`渲染文章: ${post.data.title}`, {
-          isNew, isRecent, displayDate
-        });
-        
         return (
           <ButtonLink
             url={`/blog/${post.slug}`}
@@ -117,7 +98,7 @@ const style = Astro.props.style;
       })
     ) : (
       <div class="text-center py-4 text-gray-500 dark:text-gray-400 text-sm">
-        暂无文章更新（总文章数: {posts.length}，已发布: {publishedPosts.length}）
+        {posts.length === 0 ? '未找到文章内容' : `暂无文章更新（总文章数: ${posts.length}，已发布: ${publishedPosts.length}）`}
       </div>
     )}
 </WidgetLayout>
