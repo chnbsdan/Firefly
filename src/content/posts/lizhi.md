@@ -16,199 +16,213 @@ image: "https://fly.hangdn.com/assets/images/cover2.webp"
 pubDate: 2025-11-11
 ---
 
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>100条金句摘录 - 励志句子欣赏</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            color: #333;
-            line-height: 1.6;
-            padding: 20px;
-            min-height: 100vh;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 30px 0;
+  ---
+title: "100条金句摘录，励志句子欣赏"
+published: 2025-11-11
+pinned: false
+description: "励志句子赏析，金句摘录，收藏，欢迎评论区分享好词好句子。"
+tags: [经典语录,博客指南]
+category: "经典收藏"
+licenseName: "CC BY 4.0"
+author: "小史先森"
+sourceLink: "https://blog.1356666.xyz"
+draft: false
+date: 2025-11-11
+image: "https://fly.hangdn.com/assets/images/cover2.webp"
+pubDate: 2025-11-11
+---
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    }
+    
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        color: #333;
+        line-height: 1.6;
+        padding: 20px;
+        min-height: 100vh;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 30px 0;
+    }
+    
+    h1 {
+        font-size: 2.5rem;
+        color: #2c3e50;
+        margin-bottom: 15px;
+        position: relative;
+        display: inline-block;
+    }
+    
+    h1:after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(to right, #3498db, #2ecc71);
+        border-radius: 2px;
+    }
+    
+    .page-description {
+        font-size: 1.1rem;
+        color: #7f8c8d;
+        max-width: 800px;
+        margin: 0 auto 20px;
+        text-align: center;
+    }
+    
+    .quotes-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+    }
+    
+    .quote-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .quote-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .quote-card:nth-child(6n+1) {
+        border-left: 5px solid #3498db;
+    }
+    
+    .quote-card:nth-child(6n+2) {
+        border-left: 5px solid #2ecc71;
+    }
+    
+    .quote-card:nth-child(6n+3) {
+        border-left: 5px solid #e74c3c;
+    }
+    
+    .quote-card:nth-child(6n+4) {
+        border-left: 5px solid #f39c12;
+    }
+    
+    .quote-card:nth-child(6n+5) {
+        border-left: 5px solid #9b59b6;
+    }
+    
+    .quote-card:nth-child(6n+6) {
+        border-left: 5px solid #1abc9c;
+    }
+    
+    .quote-number {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: #f8f9fa;
+        color: #7f8c8d;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+    
+    .quote-text {
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+        color: #2c3e50;
+        line-height: 1.7;
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+        color: #2c3e50;
+        margin: 40px 0 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #ecf0f1;
+    }
+    
+    .tips {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin: 2rem 0;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .tips strong {
+        font-size: 1.2rem;
+    }
+    
+    footer {
+        text-align: center;
+        margin-top: 50px;
+        padding: 20px 0;
+        color: #7f8c8d;
+        font-size: 0.9rem;
+        border-top: 1px solid #ecf0f1;
+    }
+    
+    .meta-info {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 20px 0;
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+    
+    @media (max-width: 768px) {
+        .quotes-container {
+            grid-template-columns: 1fr;
         }
         
         h1 {
-            font-size: 2.5rem;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            position: relative;
-            display: inline-block;
+            font-size: 2rem;
         }
-        
-        h1:after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
-            background: linear-gradient(to right, #3498db, #2ecc71);
-            border-radius: 2px;
-        }
-        
-        .page-description {
-            font-size: 1.1rem;
-            color: #7f8c8d;
-            max-width: 800px;
-            margin: 0 auto 20px;
-            text-align: center;
-        }
-        
-        .quotes-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-        
-        .quote-card {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .quote-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-        
-        .quote-card:nth-child(6n+1) {
-            border-left: 5px solid #3498db;
-        }
-        
-        .quote-card:nth-child(6n+2) {
-            border-left: 5px solid #2ecc71;
-        }
-        
-        .quote-card:nth-child(6n+3) {
-            border-left: 5px solid #e74c3c;
-        }
-        
-        .quote-card:nth-child(6n+4) {
-            border-left: 5px solid #f39c12;
-        }
-        
-        .quote-card:nth-child(6n+5) {
-            border-left: 5px solid #9b59b6;
-        }
-        
-        .quote-card:nth-child(6n+6) {
-            border-left: 5px solid #1abc9c;
-        }
-        
-        .quote-number {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: #f8f9fa;
-            color: #7f8c8d;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-        
-        .quote-text {
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            color: #2c3e50;
-            line-height: 1.7;
-        }
-        
-        .section-title {
-            font-size: 1.8rem;
-            color: #2c3e50;
-            margin: 40px 0 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #ecf0f1;
-        }
-        
-        .tips {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin: 2rem 0;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .tips strong {
-            font-size: 1.2rem;
-        }
-        
-        footer {
-            text-align: center;
-            margin-top: 50px;
-            padding: 20px 0;
-            color: #7f8c8d;
-            font-size: 0.9rem;
-            border-top: 1px solid #ecf0f1;
-        }
-        
-        .meta-info {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            font-size: 0.9rem;
-            color: #6c757d;
-        }
-        
-        @media (max-width: 768px) {
-            .quotes-container {
-                grid-template-columns: 1fr;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>100条金句摘录</h1>
-            <p class="page-description">励志句子赏析，金句摘录，收藏，欢迎评论区分享好词好句子。</p>
-            <div class="meta-info">
-                <strong>标签：</strong>经典语录, 博客指南 | 
-                <strong>分类：</strong>经典收藏 | 
-                <strong>作者：</strong>小史先森
-            </div>
-        </header>
-        
+    }
+</style>
+
+<div class="container">
+    <header>
+        <h1>100条金句摘录</h1>
+        <p class="page-description">励志句子赏析，金句摘录，收藏，欢迎评论区分享好词好句子。</p>
+        <div class="meta-info">
+            <strong>标签：</strong>经典语录, 博客指南 | 
+            <strong>分类：</strong>经典收藏 | 
+            <strong>作者：</strong>小史先森
+        </div>
+    </header>
+    
+    <div class="tips">
+        <strong>💡 关于本站</strong>：本站博主是技术小白，没有技术的小咖，大佬技主派的请漂过，有好玩的项目求带，与你相遇共成长！
+    </div>
+    
+          
          
         <h2 class="section-title">1-10</h2>
         <div class="quotes-container">
@@ -650,9 +664,7 @@ pubDate: 2025-11-11
             </div>
         </div>
         
-        <footer>
-            <p>励志名言集锦 &copy; 2023 | 每日一句，激励前行</p>
-        </footer>
-    </div>
-</body>
-</html>
+   <footer>
+        <p>励志名言集锦 &copy; 2023 | 每日一句，激励前行 | 来源：<a href="https://blog.1356666.xyz" style="color: #667eea;">小史先森的博客</a></p>
+    </footer>
+</div>
