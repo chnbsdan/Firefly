@@ -81,7 +81,7 @@ const style = Astro.props.style;
         
         return (
           <ButtonLink
-            url={`/blog/${post.slug}`}
+            url={`/posts/${post.slug}`}
             badge={isNew ? "新" : (isRecent ? "最新" : "")}
             label={`阅读文章: ${post.data.title}`}
           >
