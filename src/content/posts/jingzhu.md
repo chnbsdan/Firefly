@@ -11,7 +11,7 @@ sourceLink: "https://blog.1356666.xyz"
 draft: false
 date: 2025-6-08
 # 修改这里：将对象改为字符串
-image: "api"
+image: "https://uapis.cn/api/v1/random/image?category=acg&type=pc"
 # 如果需要 alt 文本，可以放在其他地方或删除
 pubDate: 2025-6-08
 ---
