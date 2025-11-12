@@ -5,6 +5,7 @@ description: 这篇文章演示如何在博客文章中嵌入视频。
 tags: [示例, 视频, Firefly]
 category: 文章示例
 draft: false
+image: "api"
 ---
 
 只需从 YouTube 或其他平台复制嵌入代码，然后将其粘贴到 markdown 文件中。
@@ -17,6 +18,15 @@ published: 2023-10-19
 ---
 
 <iframe width="100%" height="468" src="https://www.youtube.com/embed/5gIf0_xpFPI?si=N1WTorLKL0uwLsU_" title="YouTube video player" frameborder="0" allowfullscreen></iframe>
+
+
+<video controls width="100%">
+  <source src="https://images.myso.dpdns.org/hexo/hexono1.mp4" type="video/mp4">
+  您的浏览器不支持视频标签。
+</video>
+
+
+
 ```
 ## YouTube
 
@@ -25,3 +35,11 @@ published: 2023-10-19
 ## Bilibili
 
 <iframe width="100%" height="468" src="//player.bilibili.com/player.html?bvid=BV1fK4y1s7Qf&p=1&autoplay=0" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" &autoplay=0> </iframe>
+
+
+## MP4视频
+
+<video controls width="100%">
+  <source src="https://images.myso.dpdns.org/hexo/hexono1.mp4" type="video/mp4">
+  您的浏览器不支持视频标签。
+</video>
