@@ -970,49 +970,49 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   }
 
-  /* 独立歌词显示样式 */
-  .floating-lyrics {
-    position: fixed;
-    left: 100px;
-    bottom: 50px;
-    text-align: left;
-    z-index: 99999;
-    color: #ff8c00;
-    font-size: 18px;
-    font-weight: bold;
-    text-shadow: 2px 2px 12px rgba(0, 0, 0, 0.9);
-    background: rgba(255, 255, 255, 0.10);
-    padding: 15px 20px;
-    border-radius: 12px;
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    max-width: 400px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    pointer-events: none;
-    display: none;
-  }
+ /* 独立歌词显示样式 */
+.floating-lyrics {
+  position: fixed;
+  left: 100px;
+  bottom: 50px;
+  text-align: left;
+  z-index: 99999;
+  color: #1e90ff; /* 道奇蓝代替橙色 */
+  font-size: 18px;
+  font-weight: bold;
+  /* 移除 text-shadow */
+  background: rgba(255, 255, 255, 0.10);
+  padding: 15px 20px;
+  border-radius: 12px;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  max-width: 400px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+  display: none;
+}
 
-  .floating-lyrics.show {
-    opacity: 1;
-    display: block;
-  }
+.floating-lyrics.show {
+  opacity: 1;
+  display: block;
+}
 
-  .floating-lyrics .current-line {
-    color: #006400;
-    font-size: 30px;
-    margin-bottom: 8px;
-    font-weight: bold;
-    min-height: 24px;
-  }
+.floating-lyrics .current-line {
+  color: #0066cc; /* 深蓝色代替深绿色 */
+  font-size: 30px;
+  margin-bottom: 8px;
+  font-weight: bold;
+  min-height: 24px;
+}
 
-  .floating-lyrics .next-line {
-    color: #ff8c00;
-    font-size: 14px;
-    opacity: 0.8;
-    min-height: 18px;
-  }
+.floating-lyrics .next-line {
+  color: #1e90ff; /* 道奇蓝代替橙色 */
+  font-size: 14px;
+  opacity: 0.8;
+  min-height: 18px;
+}
 
  /* ===== 音乐胶囊（固定左下） ===== */
   .music-capsule {
