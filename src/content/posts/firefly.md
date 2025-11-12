@@ -6,7 +6,7 @@ description: Firefly 是一款基于 Astro 框架开发的清新美观且现代�
 tags: [Markdown, Firefly, 博客, 主题, 模板, 开源]
 category: 文章示例
 draft: false
-image: "https://uapis.cn/api/v1/random/image?category=acg&type=pc"
+image: "api"
 ---
 
 ## 🌟 项目概述
