@@ -2,6 +2,28 @@
 
 你好！我是 **小史先森** ，一个技术小白，在数字世界中默默无闻的一粒沙子。
 
+
+<div class="tips">
+💡 <strong>关于本站</strong>：本站博主是技术小白，没有技术的小咖，大佬技主派的请漂过，有好玩的项目求带，与你相遇共成长！
+</div>
+
+<style>
+.tips {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.friends-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+</style>
 ## 🛠️ 关于本站
 
 这个网站使用 **Astro** 框架构建，采用了 [Firefly](https://github.com/CuteLeaf/Firefly)模板
