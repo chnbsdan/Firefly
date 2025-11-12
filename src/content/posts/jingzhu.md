@@ -11,7 +11,7 @@ sourceLink: "https://blog.1356666.xyz"
 draft: false
 date: 2025-6-08
 # 修改这里：将对象改为字符串
-image: "https://fly.hangdn.com/assets/images/cover2.webp"
+image: "https://fly.hangdn.com/assets/images/coverfly.png"
 # 如果需要 alt 文本，可以放在其他地方或删除
 pubDate: 2025-6-08
 ---
@@ -111,5 +111,6 @@ Markdown	基础文本格式化	✅
 HTML	高级布局和样式	✅
 CSS	自定义样式	✅
 <div class="html-section"> <h3>另一个HTML区块</h3> <p>这里可以放置需要特殊样式的内容</p> <button onclick="alert('GitHub支持基础HTML!')">点击测试</button> </div>
-<footer style="text-align: center; color: #6a737d; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e1e4e8;"> <p>© 2024 您的项目名称 | <a href="https://github.com/yourusername" style="color: #0366d6;">GitHub主页</a> | 使用 <span style="color: #e34c26;">HTML</span> + <span style="color: #563d7c;">Markdown</span> 混合编写 </p> </footer> ```
+
+<footer style="text-align: center; color: #6a737d; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e1e4e8;"> <p>© 2024 您的项目名称 | <a href="https://github.com/yourusername" style="color: #0366d6;">GitHub主页</a> | 使用 <span style="color: #e34c26;">HTML</span> + <span style="color: #563d7c;">Markdown</span> 混合编写 </p> </footer> 
 
