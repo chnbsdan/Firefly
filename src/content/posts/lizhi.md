@@ -190,41 +190,40 @@ pubDate: 2025-11-11
         }
     }
 </style>
-
 <div class="container">
-    <header>
-        <h1>100条金句摘录</h1>
-        <p class="page-description">励志句子赏析，金句摘录，收藏，欢迎评论区分享好词好句子。</p>
-        <div class="meta-info">
-            <strong>标签：</strong>经典语录, 博客指南 | 
-            <strong>分类：</strong>经典收藏 | 
-            <strong>作者：</strong>小史先森
-        </div>
-    </header>
+<header>
+<h1>100条金句摘录</h1>
+<p class="page-description">励志句子赏析，金句摘录，收藏，欢迎评论区分享好词好句子。</p>
+<div class="meta-info">
+<strong>标签：</strong>经典语录, 博客指南 | 
+<strong>分类：</strong>经典收藏 | 
+<strong>作者：</strong>小史先森
+</div>
+</header>
     
-    <div class="tips">
-        <strong>💡 关于本站</strong>：本站博主是技术小白，没有技术的小咖，大佬技主派的请漂过，有好玩的项目求带，与你相遇共成长！
-    </div>
+<div class="tips">
+<strong>💡 关于本站</strong>：本站博主是技术小白，没有技术的小咖，大佬技主派的请漂过，有好玩的项目求带，与你相遇共成长！
+</div>
     
           
          
-        <h2 class="section-title">1-10</h2>
-        <div class="quotes-container">
-            <div class="quote-card">
-                <div class="quote-number">1</div>
-                <p class="quote-text">想，全是问题；做，才有答案。</p>
-            </div>
-            <div class="quote-card">
-                <div class="quote-number">2</div>
-                <p class="quote-text">你有多自律，就有多自由。</p>
-            </div>
-            <div class="quote-card">
-                <div class="quote-number">3</div>
-                <p class="quote-text">所有难过，难是难，但总会过。</p>
-            </div>
-            <div class="quote-card">
-                <div class="quote-number">4</div>
-                <p class="quote-text">蹉跎只能感动自己，行动才能打动别人。</p>
+<h2 class="section-title">1-10</h2>
+<div class="quotes-container">
+<div class="quote-card">
+<div class="quote-number">1</div>
+<p class="quote-text">想，全是问题；做，才有答案。</p>
+</div>
+<div class="quote-card">
+<div class="quote-number">2</div>
+<p class="quote-text">你有多自律，就有多自由。</p>
+</div>
+<div class="quote-card">
+<div class="quote-number">3</div>
+<p class="quote-text">所有难过，难是难，但总会过。</p>
+</div>
+<div class="quote-card">
+<div class="quote-number">4</div>
+<p class="quote-text">蹉跎只能感动自己，行动才能打动别人。</p>
             </div>
             <div class="quote-card">
                 <div class="quote-number">5</div>
