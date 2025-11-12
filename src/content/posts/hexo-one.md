@@ -1,6 +1,6 @@
 ---
 title: "【Hexo blog NO.1】快速简洁高效搭建,零成本搭建个人博客|Hexo + GitHub Pages + Cloudflare Pages 完整指南"
-published: 2025-01-18
+published: 2025-10-18
 pinned: true
 description: "教程完整版，快速简洁搭建HEXO博客，以及安装和美化使用安知鱼主题进行个性化配置。"
 tags: [hexo,教程,博客]
