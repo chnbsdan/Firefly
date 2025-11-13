@@ -1196,7 +1196,7 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     transform: translateX(-50%) rotate(25deg);
   }
 
- /* ===== 右键菜单（毛玻璃半透明） ===== */
+/* ===== 右键菜单（毛玻璃半透明） ===== */
 #right-menu {
   position: fixed;
   display: none;
@@ -1238,12 +1238,12 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 4px;
-  transition: background .12s;
+  transition: background .12s, color .12s;
 }
 
 #right-menu .nav-icon:hover {
-  background: rgba(255,255,255,0.14);
-  color: #f97316;
+  background: #10b981 !important;
+  color: white !important;
 }
 
 #right-menu li {
@@ -1304,6 +1304,12 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     background: #10b981 !important;
     color: white !important;
     border-radius: 6px;
+  }
+  
+  /* 移动端导航图标悬停效果 */
+  #right-menu .nav-icon:hover {
+    background: #10b981 !important;
+    color: white !important;
   }
 }
 
