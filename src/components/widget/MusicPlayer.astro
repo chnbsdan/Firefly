@@ -1220,18 +1220,18 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   flex-direction: column;
 }
 
-/* 导航图标栏 - 关键修改：移除背景色 */
+/* 导航图标栏 - 完全移除背景色 */
 #right-menu .nav-icons {
   display: flex;
   justify-content: space-around;
   padding: 8px 16px;
   border-bottom: 1px solid rgba(255,255,255,0.2);
   margin-bottom: 4px;
-  background: transparent !important; /* 关键：移除背景色 */
+  background: transparent !important; /* 确保没有背景色 */
   border-radius: 8px 8px 0 0;
 }
 
-/* 每个图标独立的背景 */
+/* 每个图标独立的样式 */
 #right-menu .nav-icon {
   font-size: 20px;
   font-weight: 900;
@@ -1245,17 +1245,22 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   justify-content: center;
   min-width: 36px;
   min-height: 36px;
-  background: rgba(255, 255, 255, 0.05); /* 图标自己的背景 */
+  background: rgba(255, 255, 255, 0.05); /* 图标默认背景 */
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* 悬停时只改变当前图标 */
+/* 只有悬停的图标变绿 */
 #right-menu .nav-icon:hover {
   background: #10b981 !important;
   color: white !important;
   transform: scale(1.15);
   border-color: #10b981;
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* 确保导航栏本身没有悬停效果 */
+#right-menu .nav-icons:hover {
+  background: transparent !important;
 }
 
 #right-menu li {
