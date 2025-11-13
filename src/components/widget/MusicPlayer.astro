@@ -1201,14 +1201,14 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   position: fixed;
   display: none;
   z-index: 40000;
-  min-width: 220px;
+  min-width: 210px; /* 减小最小宽度 */
   background: rgba(255,255,255,0.12);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   color: #008000;
   border-radius: 10px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-  padding: 3px 0; /* 减小整体内边距 */
+  padding: 2px 0; /* 进一步减小整体内边距 */
   opacity: 0;
   transform: scale(.98);
   transition: opacity .12s,transform .12s;
@@ -1226,9 +1226,9 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
 #right-menu .nav-icons {
   display: flex;
   justify-content: space-around;
-  padding: 6px 16px; /* 减小内边距 */
+  padding: 4px 12px; /* 进一步减小内边距 */
   border-bottom: 1px solid rgba(255,255,255,0.2);
-  margin-bottom: 1px; /* 减小底部间距 */
+  margin-bottom: 1px; /* 进一步减小底部间距 */
   background: transparent !important;
   border-radius: 8px 8px 0 0;
 }
@@ -1238,18 +1238,18 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
 }
 
 #right-menu .nav-icon {
-  font-size: 20px;
+  font-size: 18px; /* 稍微减小字体 */
   font-weight: 900;
   color: #008000;
   cursor: pointer;
-  padding: 6px 10px; /* 减小内边距 */
-  border-radius: 8px;
+  padding: 4px 8px; /* 进一步减小内边距 */
+  border-radius: 6px;
   transition: all .15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 34px; /* 减小最小宽度 */
-  min-height: 34px; /* 减小最小高度 */
+  min-width: 30px; /* 进一步减小最小宽度 */
+  min-height: 30px; /* 进一步减小最小高度 */
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -1257,15 +1257,15 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
 #right-menu .nav-icon:hover {
   background: #10b981 !important;
   color: white !important;
-  transform: scale(1.15);
+  transform: scale(1.1); /* 减小放大效果 */
   border-color: #10b981;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3); /* 减小阴影 */
 }
 
-/* 菜单项 - 减小间距，更紧凑 */
+/* 菜单项 - 进一步减小间距，更紧凑 */
 #right-menu li:not(.nav-icons) {
   list-style: none;
-  padding: 8px 12px; /* 减小内边距 */
+  padding: 6px 14px; /* 进一步减小内边距 */
   cursor: pointer;
   white-space: nowrap;
   font-weight: 700;
@@ -1273,14 +1273,15 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 6px; /* 减小图标与文字间距 */
-  margin: 1px 0; /* 添加微小间距避免重叠 */
+  gap: 6px; /* 进一步减小图标与文字间距 */
+  margin: 0; /* 移除间距 */
+  font-size: 14px; /* 稍微减小字体 */
 }
 
 #right-menu li:not(.nav-icons):hover {
   background: #10b981 !important;
   color: white !important;
-  border-radius: 6px;
+  border-radius: 4px; /* 减小圆角 */
 }
 
 #right-menu::after {
@@ -1325,26 +1326,21 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   
   /* 移动端导航图标 */
   #right-menu .nav-icon {
-    font-size: 18px;
-    padding: 5px 8px;
-    min-width: 30px;
-    min-height: 30px;
+    font-size: 16px;
+    padding: 3px 6px;
+    min-width: 26px;
+    min-height: 26px;
   }
   
   #right-menu .nav-icon:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
   }
   
   /* 移动端菜单项调整 - 更紧凑 */
   #right-menu li:not(.nav-icons) {
-    padding: 6px 14px;
-    gap: 6px;
-  }
-  
-  #right-menu li:not(.nav-icons):hover {
-    background: #10b981 !important;
-    color: white !important;
-    border-radius: 6px;
+    padding: 4px 12px;
+    gap: 4px;
+    font-size: 13px;
   }
 }
 
