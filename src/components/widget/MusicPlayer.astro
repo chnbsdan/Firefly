@@ -1212,7 +1212,9 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   opacity: 0;
   transform: scale(.98);
   transition: opacity .12s,transform .12s;
+  border: 1px solid #10b981; /* 添加绿色边框 */
 }
+
 #right-menu.show {
   display: flex;
   opacity: 1;
@@ -1220,18 +1222,17 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   flex-direction: column;
 }
 
-/* 导航图标栏 - 完全移除背景色 */
+/* 导航图标栏 */
 #right-menu .nav-icons {
   display: flex;
   justify-content: space-around;
   padding: 8px 16px;
   border-bottom: 1px solid rgba(255,255,255,0.2);
   margin-bottom: 4px;
-  background: transparent !important; /* 确保没有背景色 */
+  background: transparent !important;
   border-radius: 8px 8px 0 0;
 }
 
-/* 每个图标独立的样式 */
 #right-menu .nav-icon {
   font-size: 20px;
   font-weight: 900;
@@ -1245,11 +1246,10 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   justify-content: center;
   min-width: 36px;
   min-height: 36px;
-  background: rgba(255, 255, 255, 0.05); /* 图标默认背景 */
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* 只有悬停的图标变绿 */
 #right-menu .nav-icon:hover {
   background: #10b981 !important;
   color: white !important;
@@ -1258,24 +1258,32 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
-/* 确保导航栏本身没有悬停效果 */
-#right-menu .nav-icons:hover {
-  background: transparent !important;
-}
-
+/* 菜单项 - 增大图标文字间距并居中 */
 #right-menu li {
   list-style: none;
-  padding: 10px 16px;
+  padding: 12px 20px; /* 增加内边距 */
   cursor: pointer;
   white-space: nowrap;
   font-weight: 700;
   transition: background .12s, color .12s;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* 靠左但图标文字有间距 */
+  gap: 12px; /* 增大图标与文字间距 */
 }
+
+/* 确保所有菜单项内容居中 */
+#right-menu li:not(.nav-icons) {
+  justify-content: flex-start;
+  padding-left: 20px;
+}
+
 #right-menu li:hover {
   background: #10b981 !important;
   color: white !important;
   border-radius: 6px;
 }
+
 #right-menu::after {
   content: "";
   position: absolute;
@@ -1326,6 +1334,16 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   
   #right-menu .nav-icon:hover {
     transform: scale(1.1);
+  }
+  
+  /* 移动端菜单项调整 */
+  #right-menu li {
+    padding: 10px 16px;
+    gap: 10px;
+  }
+  
+  #right-menu li:not(.nav-icons) {
+    padding-left: 16px;
   }
   
   /* 移动端右键菜单悬停效果 */
