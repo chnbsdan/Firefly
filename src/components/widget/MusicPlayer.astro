@@ -1196,112 +1196,119 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     transform: translateX(-50%) rotate(25deg);
   }
 
-  /* ===== 右键菜单（毛玻璃半透明） ===== */
-  #right-menu {
-    position: fixed;
-    display: none;
-    z-index: 40000;
-    min-width: 220px;
-    background: rgba(255,255,255,0.12);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    color: #008000;
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-    padding: 6px 0;
-    opacity: 0;
-    transform: scale(.98);
-    transition: opacity .12s,transform .12s;
-  }
-  #right-menu.show {
-    display: flex;
-    opacity: 1;
-    transform: scale(1);
-    flex-direction: column;
+ /* ===== 右键菜单（毛玻璃半透明） ===== */
+#right-menu {
+  position: fixed;
+  display: none;
+  z-index: 40000;
+  min-width: 220px;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #008000;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  padding: 6px 0;
+  opacity: 0;
+  transform: scale(.98);
+  transition: opacity .12s,transform .12s;
+}
+#right-menu.show {
+  display: flex;
+  opacity: 1;
+  transform: scale(1);
+  flex-direction: column;
+}
+
+/* 导航图标栏 */
+#right-menu .nav-icons {
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  margin-bottom: 4px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 8px 8px 0 0;
+}
+
+#right-menu .nav-icon {
+  font-size: 16px;
+  font-weight: bold;
+  color: #008000;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background .12s;
+}
+
+#right-menu .nav-icon:hover {
+  background: rgba(255,255,255,0.14);
+  color: #f97316;
+}
+
+#right-menu li {
+  list-style: none;
+  padding: 10px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-weight: 700;
+  transition: background .12s, color .12s;
+}
+#right-menu li:hover {
+  background: #10b981 !important;
+  color: white !important;
+  border-radius: 6px;
+}
+#right-menu::after {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: var(--arrow-left,24px);
+  transform: translateX(-50%);
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid rgba(255,255,255,0.12);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .music-capsule {
+    left: 18px;
+    bottom: 22px;
+    width: 60px;
+    height: 60px;
   }
   
-  /* 导航图标栏 */
-  #right-menu .nav-icons {
-    display: flex;
-    justify-content: space-around;
-    padding: 8px 16px;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
-    margin-bottom: 4px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 8px 8px 0 0;
-  }
-  
-  #right-menu .nav-icon {
+  .floating-lyrics {
+    left: 90px;
+    bottom: 30px;
+    max-width: 250px;
     font-size: 16px;
-    font-weight: bold;
-    color: #008000;
-    cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 4px;
-    transition: background .12s;
   }
   
-  #right-menu .nav-icon:hover {
-    background: rgba(255,255,255,0.14);
-    color: #f97316;
+  .floating-lyrics .current-line {
+    font-size: 18px;
   }
   
-  #right-menu li {
-    list-style: none;
-    padding: 10px 16px;
-    cursor: pointer;
-    white-space: nowrap;
-    font-weight: 700;
-    transition: background .12s;
+  .floating-lyrics .next-line {
+    font-size: 12px;
   }
+  
+  #player-wrap {
+    width: calc(100vw - 36px);
+    max-width: 360px;
+  }
+  
+  /* 移动端右键菜单悬停效果 */
   #right-menu li:hover {
-    background: rgba(255,255,255,0.14);
-    color: #f97316;
+    background: #10b981 !important;
+    color: white !important;
     border-radius: 6px;
   }
-  #right-menu::after {
-    content: "";
-    position: absolute;
-    top: -8px;
-    left: var(--arrow-left,24px);
-    transform: translateX(-50%);
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-bottom: 8px solid rgba(255,255,255,0.12);
-  }
+}
 
-  /* 响应式调整 */
-  @media (max-width: 768px) {
-    .music-capsule {
-      left: 18px;
-      bottom: 22px;
-      width: 60px;
-      height: 60px;
-    }
-    
-    .floating-lyrics {
-      left: 90px;
-      bottom: 30px;
-      max-width: 250px;
-      font-size: 16px;
-    }
-    
-    .floating-lyrics .current-line {
-      font-size: 18px;
-    }
-    
-    .floating-lyrics .next-line {
-      font-size: 12px;
-    }
-    
-    #player-wrap {
-      width: calc(100vw - 36px);
-      max-width: 360px;
-    }
-  }
-
-  /* 移动端隐藏 */
-  .mobile-hide {
-    display: none !important;
-  }
+/* 移动端隐藏 */
+.mobile-hide {
+  display: none !important;
+}
 </style>
