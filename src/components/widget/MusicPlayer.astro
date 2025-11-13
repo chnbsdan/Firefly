@@ -1222,7 +1222,7 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   flex-direction: column;
 }
 
-/* 导航图标栏 */
+/* 导航图标栏 - 确保没有背景色 */
 #right-menu .nav-icons {
   display: flex;
   justify-content: space-around;
@@ -1231,6 +1231,11 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   margin-bottom: 4px;
   background: transparent !important;
   border-radius: 8px 8px 0 0;
+}
+
+/* 移除导航栏的悬停背景 */
+#right-menu .nav-icons:hover {
+  background: transparent !important;
 }
 
 #right-menu .nav-icon {
@@ -1259,26 +1264,20 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
 }
 
 /* 菜单项 - 增大图标文字间距并居中 */
-#right-menu li {
+#right-menu li:not(.nav-icons) {
   list-style: none;
-  padding: 12px 20px; /* 增加内边距 */
+  padding: 12px 20px;
   cursor: pointer;
   white-space: nowrap;
   font-weight: 700;
   transition: background .12s, color .12s;
   display: flex;
   align-items: center;
-  justify-content: flex-start; /* 靠左但图标文字有间距 */
+  justify-content: flex-start;
   gap: 12px; /* 增大图标与文字间距 */
 }
 
-/* 确保所有菜单项内容居中 */
-#right-menu li:not(.nav-icons) {
-  justify-content: flex-start;
-  padding-left: 20px;
-}
-
-#right-menu li:hover {
+#right-menu li:not(.nav-icons):hover {
   background: #10b981 !important;
   color: white !important;
   border-radius: 6px;
@@ -1337,17 +1336,13 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   }
   
   /* 移动端菜单项调整 */
-  #right-menu li {
+  #right-menu li:not(.nav-icons) {
     padding: 10px 16px;
     gap: 10px;
   }
   
-  #right-menu li:not(.nav-icons) {
-    padding-left: 16px;
-  }
-  
   /* 移动端右键菜单悬停效果 */
-  #right-menu li:hover {
+  #right-menu li:not(.nav-icons):hover {
     background: #10b981 !important;
     color: white !important;
     border-radius: 6px;
