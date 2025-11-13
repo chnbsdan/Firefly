@@ -63,6 +63,9 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       <li id="menu-volup">🔊 音量 +</li>
       <li id="menu-voldown">🔉 音量 -</li>
       <li id="menu-lyrics">📜 显示/隐藏歌词</li>
+      <!-- 新增的两个菜单项 -->
+      <li id="menu-random">🎲 随变逛逛</li>
+      <li id="menu-home">🏠 回主页</li>
       <li id="menu-support">💡 技术支持</li>
       <li id="menu-fullscreen">🖥️ 全屏模式</li>
       <li id="menu-close">❌ 关闭播放器</li>
@@ -758,6 +761,32 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       }
     }
 
+    // 新增功能：随机跳转和回主页
+    function randomNavigate() {
+      // 这里可以替换为您博客的实际文章链接数组
+      const randomPages = [
+        '/posts/git-pic-ver',
+        '/posts/hexo-one', 
+        '/posts/lizhi',
+        '/posts/markdown-mermaid',
+        '/posts/jiaoyizhidao'
+        // 添加更多文章链接...
+      ];
+      
+      // 如果没有定义页面数组，使用一个简单的随机跳转逻辑
+      if (randomPages && randomPages.length > 0) {
+        const randomIndex = Math.floor(Math.random() * randomPages.length);
+        window.location.href = randomPages[randomIndex];
+      } else {
+        // 备用方案：跳转到随机文章页面或归档页面
+        window.location.href = '/archives';
+      }
+    }
+
+    function goHome() {
+      window.location.href = '/';
+    }
+
     // 辅助函数
     async function ensurePlayerAndRun(fn){
       try {
@@ -819,6 +848,9 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       const menuVolup = document.getElementById('menu-volup');
       const menuVoldown = document.getElementById('menu-voldown');
       const menuLyrics = document.getElementById('menu-lyrics');
+      // 新增的两个菜单项
+      const menuRandom = document.getElementById('menu-random');
+      const menuHome = document.getElementById('menu-home');
       const menuSupport = document.getElementById('menu-support');
       const menuFullscreen = document.getElementById('menu-fullscreen');
       const menuClose = document.getElementById('menu-close');
@@ -829,6 +861,15 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       if (menuVolup) menuVolup.addEventListener('click', ()=>{ volumeUp(); hideRightMenuImmediate(); });
       if (menuVoldown) menuVoldown.addEventListener('click', ()=>{ volumeDown(); hideRightMenuImmediate(); });
       if (menuLyrics) menuLyrics.addEventListener('click', ()=>{ toggleLyricsVisibility(); hideRightMenuImmediate(); });
+      // 新增的菜单事件
+      if (menuRandom) menuRandom.addEventListener('click', ()=>{ 
+        randomNavigate(); 
+        hideRightMenuImmediate(); 
+      });
+      if (menuHome) menuHome.addEventListener('click', ()=>{ 
+        goHome(); 
+        hideRightMenuImmediate(); 
+      });
       if (menuSupport) menuSupport.addEventListener('click', ()=>{ window.open('https://1356666.xyz','_blank'); hideRightMenuImmediate(); });
       if (menuFullscreen) menuFullscreen.addEventListener('click', ()=>{ 
         if (!document.fullscreenElement) {
