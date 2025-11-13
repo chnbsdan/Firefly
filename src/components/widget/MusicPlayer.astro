@@ -1220,45 +1220,42 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   flex-direction: column;
 }
 
-/* 导航图标栏 - 完全重写 */
+/* 导航图标栏 - 关键修改：移除背景色 */
 #right-menu .nav-icons {
   display: flex;
-  justify-content: space-between;
-  padding: 12px 16px;
+  justify-content: space-around;
+  padding: 8px 16px;
   border-bottom: 1px solid rgba(255,255,255,0.2);
   margin-bottom: 4px;
-  background: transparent !important;
+  background: transparent !important; /* 关键：移除背景色 */
   border-radius: 8px 8px 0 0;
-  gap: 8px;
 }
 
-/* 每个导航图标独立容器 */
-#right-menu .nav-icons .nav-icon {
-  font-size: 22px !important;
-  font-weight: 900 !important;
-  color: #008000 !important;
+/* 每个图标独立的背景 */
+#right-menu .nav-icon {
+  font-size: 20px;
+  font-weight: 900;
+  color: #008000;
   cursor: pointer;
-  padding: 10px !important;
-  border-radius: 8px !important;
-  transition: all 0.2s ease !important;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all .15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px !important;
-  height: 44px !important;
-  background: rgba(255, 255, 255, 0.08) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  margin: 0 !important;
-  flex: 0 0 auto !important;
+  min-width: 36px;
+  min-height: 36px;
+  background: rgba(255, 255, 255, 0.05); /* 图标自己的背景 */
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* 悬停效果 - 强制独立 */
-#right-menu .nav-icons .nav-icon:hover {
+/* 悬停时只改变当前图标 */
+#right-menu .nav-icon:hover {
   background: #10b981 !important;
   color: white !important;
-  transform: scale(1.15) !important;
-  border-color: #10b981 !important;
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4) !important;
+  transform: scale(1.15);
+  border-color: #10b981;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
 #right-menu li {
@@ -1315,15 +1312,15 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   }
   
   /* 移动端导航图标 */
-  #right-menu .nav-icons .nav-icon {
-    font-size: 20px !important;
-    width: 40px !important;
-    height: 40px !important;
-    padding: 8px !important;
+  #right-menu .nav-icon {
+    font-size: 18px;
+    padding: 6px 10px;
+    min-width: 32px;
+    min-height: 32px;
   }
   
-  #right-menu .nav-icons .nav-icon:hover {
-    transform: scale(1.1) !important;
+  #right-menu .nav-icon:hover {
+    transform: scale(1.1);
   }
   
   /* 移动端右键菜单悬停效果 */
