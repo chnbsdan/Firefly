@@ -1208,11 +1208,11 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   color: #008000;
   border-radius: 10px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-  padding: 6px 0;
+  padding: 4px 0; /* 减小整体内边距 */
   opacity: 0;
   transform: scale(.98);
   transition: opacity .12s,transform .12s;
-  border: 1px solid #10b981; /* 添加绿色边框 */
+  border: 1px solid #10b981;
 }
 
 #right-menu.show {
@@ -1222,18 +1222,17 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   flex-direction: column;
 }
 
-/* 导航图标栏 - 确保没有背景色 */
+/* 导航图标栏 */
 #right-menu .nav-icons {
   display: flex;
   justify-content: space-around;
-  padding: 8px 16px;
+  padding: 6px 16px; /* 减小内边距 */
   border-bottom: 1px solid rgba(255,255,255,0.2);
-  margin-bottom: 4px;
+  margin-bottom: 2px; /* 减小底部间距 */
   background: transparent !important;
   border-radius: 8px 8px 0 0;
 }
 
-/* 移除导航栏的悬停背景 */
 #right-menu .nav-icons:hover {
   background: transparent !important;
 }
@@ -1243,14 +1242,14 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   font-weight: 900;
   color: #008000;
   cursor: pointer;
-  padding: 8px 12px;
+  padding: 6px 10px; /* 减小内边距 */
   border-radius: 8px;
   transition: all .15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 36px;
-  min-height: 36px;
+  min-width: 34px; /* 减小最小宽度 */
+  min-height: 34px; /* 减小最小高度 */
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -1263,10 +1262,10 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
-/* 菜单项 - 增大图标文字间距并居中 */
+/* 菜单项 - 减小间距，更紧凑 */
 #right-menu li:not(.nav-icons) {
   list-style: none;
-  padding: 12px 20px;
+  padding: 8px 16px; /* 减小内边距 */
   cursor: pointer;
   white-space: nowrap;
   font-weight: 700;
@@ -1274,7 +1273,8 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 12px; /* 增大图标与文字间距 */
+  gap: 8px; /* 减小图标与文字间距 */
+  margin: 1px 0; /* 添加微小间距避免重叠 */
 }
 
 #right-menu li:not(.nav-icons):hover {
@@ -1326,22 +1326,21 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   /* 移动端导航图标 */
   #right-menu .nav-icon {
     font-size: 18px;
-    padding: 6px 10px;
-    min-width: 32px;
-    min-height: 32px;
+    padding: 5px 8px;
+    min-width: 30px;
+    min-height: 30px;
   }
   
   #right-menu .nav-icon:hover {
     transform: scale(1.1);
   }
   
-  /* 移动端菜单项调整 */
+  /* 移动端菜单项调整 - 更紧凑 */
   #right-menu li:not(.nav-icons) {
-    padding: 10px 16px;
-    gap: 10px;
+    padding: 6px 14px;
+    gap: 6px;
   }
   
-  /* 移动端右键菜单悬停效果 */
   #right-menu li:not(.nav-icons):hover {
     background: #10b981 !important;
     color: white !important;
