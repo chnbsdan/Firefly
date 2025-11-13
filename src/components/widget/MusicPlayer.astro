@@ -1227,29 +1227,34 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   padding: 8px 16px;
   border-bottom: 1px solid rgba(255,255,255,0.2);
   margin-bottom: 4px;
-  background: rgba(255,255,255,0.08);
+  background: transparent; /* 移除背景色 */
   border-radius: 8px 8px 0 0;
+  gap: 4px; /* 添加图标间距 */
 }
 
 #right-menu .nav-icon {
-  font-size: 18px; /* 增大图标 */
-  font-weight: 900; /* 加粗图标 */
+  font-size: 20px; /* 进一步增大图标 */
+  font-weight: 900;
   color: #008000;
   cursor: pointer;
-  padding: 6px 10px; /* 增加内边距 */
-  border-radius: 6px; /* 圆角 */
-  transition: background .12s, color .12s, transform .12s;
+  padding: 8px 12px; /* 增加内边距 */
+  border-radius: 8px; /* 圆角 */
+  transition: all .15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 32px; /* 最小宽度 */
-  min-height: 32px; /* 最小高度 */
+  min-width: 36px; /* 增大最小宽度 */
+  min-height: 36px; /* 增大最小高度 */
+  background: rgba(255,255,255,0.05); /* 给每个图标独立背景 */
+  border: 1px solid rgba(255,255,255,0.1); /* 添加边框区分 */
 }
 
 #right-menu .nav-icon:hover {
   background: #10b981 !important;
   color: white !important;
-  transform: scale(1.1); /* 悬停时轻微放大 */
+  transform: scale(1.15); /* 增大悬停放大效果 */
+  border-color: #10b981; /* 边框也变绿色 */
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); /* 添加阴影效果 */
 }
 
 #right-menu li {
@@ -1305,18 +1310,23 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     max-width: 360px;
   }
   
+  /* 移动端导航图标调整 */
+  #right-menu .nav-icon {
+    font-size: 18px;
+    padding: 6px 10px;
+    min-width: 32px;
+    min-height: 32px;
+  }
+  
+  #right-menu .nav-icon:hover {
+    transform: scale(1.1);
+  }
+  
   /* 移动端右键菜单悬停效果 */
   #right-menu li:hover {
     background: #10b981 !important;
     color: white !important;
     border-radius: 6px;
-  }
-  
-  /* 移动端导航图标悬停效果 */
-  #right-menu .nav-icon:hover {
-    background: #10b981 !important;
-    color: white !important;
-    transform: scale(1.05); /* 移动端放大效果稍小 */
   }
 }
 
