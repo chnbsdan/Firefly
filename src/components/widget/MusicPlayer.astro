@@ -57,18 +57,25 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
 
     <!-- 右键菜单 -->
     <ul id="right-menu" role="menu" aria-hidden="true">
-      <li id="menu-play">播放 / 暂停</li>
-      <li id="menu-prev">上一首</li>
-      <li id="menu-next">下一首</li>
-      <li id="menu-volup">音量 +</li>
-      <li id="menu-voldown">音量 -</li>
-      <li id="menu-lyrics">显示/隐藏歌词</li>
+      <!-- 新增的导航图标栏 -->
+      <li class="nav-icons">
+        <span class="nav-icon" id="nav-back">←</span>
+        <span class="nav-icon" id="nav-forward">→</span>
+        <span class="nav-icon" id="nav-refresh">↻</span>
+        <span class="nav-icon" id="nav-top">↑</span>
+      </li>
+      <li id="menu-play">▶ 播放 / 暂停</li>
+      <li id="menu-prev">⏮ 上一首</li>
+      <li id="menu-next">⏭ 下一首</li>
+      <li id="menu-volup">🔊 音量 +</li>
+      <li id="menu-voldown">🔉 音量 -</li>
+      <li id="menu-lyrics">📜 显示/隐藏歌词</li>
       <!-- 新增的两个菜单项 -->
-      <li id="menu-random">随变逛逛</li>
-      <li id="menu-home">回主页</li>
-      <li id="menu-support">技术支持</li>
-      <li id="menu-fullscreen">全屏模式</li>
-      <li id="menu-close">关闭播放器</li>
+      <li id="menu-random">🎲 随变逛逛</li>
+      <li id="menu-home">🏠 回主页</li>
+      <li id="menu-support">💡 技术支持</li>
+      <li id="menu-fullscreen">🖥️ 全屏模式</li>
+      <li id="menu-close">❌ 关闭播放器</li>
     </ul>
   </>
 )}
@@ -677,8 +684,8 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       rightMenu.style.display = 'block';
       rightMenu.classList.remove('show');
       requestAnimationFrame(()=>{
-        const mw = rightMenu.offsetWidth || 240;
-        const mh = rightMenu.offsetHeight || 320;
+        const mw = rightMenu.offsetWidth || 220;
+        const mh = rightMenu.offsetHeight || 280;
         let left = Math.round(clientX - mw/2);
         left = Math.max(8, Math.min(left, window.innerWidth - mw - 8));
         let top = clientY - mh - 12;
@@ -723,7 +730,7 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       
       const lyricsMenuItem = document.getElementById('menu-lyrics');
       if (lyricsMenuItem) {
-        lyricsMenuItem.textContent = lyricsVisible ? '隐藏歌词' : '显示歌词';
+        lyricsMenuItem.textContent = lyricsVisible ? '📜 隐藏歌词' : '📜 显示歌词';
       }
       localStorage.setItem('lyricsVisible', lyricsVisible.toString());
     }
@@ -785,6 +792,27 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       window.location.href = '/';
     }
 
+    // 导航图标功能
+    function navBack() {
+      window.history.back();
+      hideRightMenuImmediate();
+    }
+
+    function navForward() {
+      window.history.forward();
+      hideRightMenuImmediate();
+    }
+
+    function navRefresh() {
+      window.location.reload();
+      hideRightMenuImmediate();
+    }
+
+    function navTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      hideRightMenuImmediate();
+    }
+
     // 辅助函数
     async function ensurePlayerAndRun(fn){
       try {
@@ -805,7 +833,7 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       
       const lyricsMenuItem = document.getElementById('menu-lyrics');
       if (lyricsMenuItem) {
-        lyricsMenuItem.textContent = lyricsVisible ? '隐藏歌词' : '显示歌词';
+        lyricsMenuItem.textContent = lyricsVisible ? '📜 隐藏歌词' : '📜 显示歌词';
       }
       
       if (!lyricsVisible && floatingLyrics) {
@@ -852,6 +880,12 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
       const menuSupport = document.getElementById('menu-support');
       const menuFullscreen = document.getElementById('menu-fullscreen');
       const menuClose = document.getElementById('menu-close');
+      
+      // 导航图标功能绑定
+      const navBackBtn = document.getElementById('nav-back');
+      const navForwardBtn = document.getElementById('nav-forward');
+      const navRefreshBtn = document.getElementById('nav-refresh');
+      const navTopBtn = document.getElementById('nav-top');
 
       if (menuPlay) menuPlay.addEventListener('click', ()=>{ ensurePlayerAndRun(ap=>ap.toggle()); hideRightMenuImmediate(); });
       if (menuPrev) menuPrev.addEventListener('click', ()=>{ ensurePlayerAndRun(ap=>ap.skipBack()); hideRightMenuImmediate(); });
@@ -882,6 +916,12 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
         if (playerWrap) playerWrap.classList.remove('show');
         hideRightMenuImmediate(); 
       });
+      
+      // 导航图标事件
+      if (navBackBtn) navBackBtn.addEventListener('click', navBack);
+      if (navForwardBtn) navForwardBtn.addEventListener('click', navForward);
+      if (navRefreshBtn) navRefreshBtn.addEventListener('click', navRefresh);
+      if (navTopBtn) navTopBtn.addEventListener('click', navTop);
 
       // 预初始化
       setTimeout(() => {
@@ -1154,133 +1194,78 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     transform: translateX(-50%) rotate(25deg);
   }
 
-  /* ===== 右键菜单（毛玻璃半透明带导航栏） ===== */
+  /* ===== 右键菜单（毛玻璃半透明） ===== */
   #right-menu {
     position: fixed;
     display: none;
     z-index: 40000;
-    min-width: 240px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    color: #2d3748;
-    border-radius: 12px;
-    box-shadow: 
-      0 10px 40px rgba(0, 0, 0, 0.15),
-      0 0 0 1px rgba(255, 255, 255, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.4);
-    padding: 0;
+    min-width: 220px;
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #008000;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    padding: 6px 0;
     opacity: 0;
     transform: scale(.98);
-    transition: opacity .15s ease, transform .15s ease;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    overflow: hidden;
+    transition: opacity .12s,transform .12s;
   }
-
   #right-menu.show {
     display: flex;
     opacity: 1;
     transform: scale(1);
     flex-direction: column;
   }
-
-  /* 顶部导航栏 */
-  #right-menu::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 36px;
-    background: linear-gradient(135deg, rgba(248, 250, 252, 0.9), rgba(241, 245, 249, 0.9));
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-    border-radius: 12px 12px 0 0;
-    z-index: 1;
-  }
-
-  /* 导航图标容器 */
-  #right-menu::after {
-    content: "← → ↻ ↑";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 36px;
+  
+  /* 导航图标栏 */
+  #right-menu .nav-icons {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: 600;
-    color: #475569;
-    letter-spacing: 8px;
-    padding-left: 8px;
-    z-index: 2;
-    background: transparent;
+    justify-content: space-around;
+    padding: 8px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    margin-bottom: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 8px 8px 0 0;
   }
-
+  
+  #right-menu .nav-icon {
+    font-size: 16px;
+    font-weight: bold;
+    color: #008000;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background .12s;
+  }
+  
+  #right-menu .nav-icon:hover {
+    background: rgba(255,255,255,0.14);
+    color: #f97316;
+  }
+  
   #right-menu li {
     list-style: none;
     padding: 10px 16px;
     cursor: pointer;
     white-space: nowrap;
-    font-weight: 600;
-    font-size: 13px;
-    transition: all .12s ease;
-    position: relative;
-    display: flex;
-    align-items: center;
-    border-left: 3px solid transparent;
-    margin-top: 36px; /* 为顶部导航栏留出空间 */
+    font-weight: 700;
+    transition: background .12s;
   }
-
   #right-menu li:hover {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(168, 85, 247, 0.08));
-    color: #3b82f6;
-    border-left-color: #3b82f6;
+    background: rgba(255,255,255,0.14);
+    color: #f97316;
+    border-radius: 6px;
   }
-
-  /* 菜单项图标样式 */
-  #right-menu li::before {
-    content: "";
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    margin-right: 10px;
-    background: currentColor;
-    mask-size: contain;
-    -webkit-mask-size: contain;
-    mask-repeat: no-repeat;
-    -webkit-mask-repeat: no-repeat;
-    mask-position: center;
-    -webkit-mask-position: center;
-    opacity: 0.7;
-  }
-
-  /* 为每个菜单项设置不同的图标 */
-  #menu-play::before { mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='currentColor'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E"); }
-  #menu-prev::before { mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='currentColor'%3E%3Cpath d='M6 6l12 12M6 18V6'/%3E%3C/svg%3E"); }
-  #menu-next::before { mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='currentColor'%3E%3Cpath d='M6 6l12 12M18 6v12'/%3E%3C/svg%3E"); }
-  #menu-volup::before { mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='currentColor'%3E%3Cpath d='M11 5L6 9H2v6h4l5 4zM15.54 8.46a5 5 0 010 7.07'/%3E%3C/svg%3E"); }
-  #menu-voldown::before { mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='currentColor'%3E%3Cpath d='M11 5L6 9H2v6h4l5 4zM15.54 8.46a5 5 0 010 7.07'/%3E%3C/svg%3E"); transform: scale(0.8); }
-  #menu-lyrics::before { mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='currentColor'%3E%3Cpath d='M9 12h6m-6 4h6m2 4H7a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v12a2 2 0 01-2 2z'/%3E%3C/svg%3E"); }
-  #menu-random::before { mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='currentColor'%3E%3Cpath d='M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15'/%3E%3C/svg%3E"); }
-  #menu-home::before { mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='currentColor'%3E%3Cpath d='M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z'/%3E%3C/svg%3E"); }
-  #menu-support::before { mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='currentColor'%3E%3Cpath d='M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z'/%3E%3C/svg%3E"); }
-  #menu-fullscreen::before { mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='currentColor'%3E%3Cpath d='M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3'/%3E%3C/svg%3E"); }
-  #menu-close::before { mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='currentColor'%3E%3Cpath d='M6 18L18 6M6 6l12 12'/%3E%3C/svg%3E"); }
-
   #right-menu::after {
     content: "";
     position: absolute;
     top: -8px;
-    left: var(--arrow-left, 24px);
+    left: var(--arrow-left,24px);
     transform: translateX(-50%);
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-bottom: 8px solid rgba(255, 255, 255, 0.95);
-    z-index: 4;
+    border-bottom: 8px solid rgba(255,255,255,0.12);
   }
 
   /* 响应式调整 */
@@ -1310,10 +1295,6 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
     #player-wrap {
       width: calc(100vw - 36px);
       max-width: 360px;
-    }
-
-    #right-menu {
-      min-width: 200px;
     }
   }
 
