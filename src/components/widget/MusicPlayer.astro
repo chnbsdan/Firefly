@@ -1232,18 +1232,24 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
 }
 
 #right-menu .nav-icon {
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 18px; /* 增大图标 */
+  font-weight: 900; /* 加粗图标 */
   color: #008000;
   cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: background .12s, color .12s;
+  padding: 6px 10px; /* 增加内边距 */
+  border-radius: 6px; /* 圆角 */
+  transition: background .12s, color .12s, transform .12s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px; /* 最小宽度 */
+  min-height: 32px; /* 最小高度 */
 }
 
 #right-menu .nav-icon:hover {
   background: #10b981 !important;
   color: white !important;
+  transform: scale(1.1); /* 悬停时轻微放大 */
 }
 
 #right-menu li {
@@ -1310,6 +1316,7 @@ const processedLocalPlaylist = config.mode === "local" && config.local?.playlist
   #right-menu .nav-icon:hover {
     background: #10b981 !important;
     color: white !important;
+    transform: scale(1.05); /* 移动端放大效果稍小 */
   }
 }
 
