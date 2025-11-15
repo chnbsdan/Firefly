@@ -40,7 +40,7 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
   // 添加公益服务项目
   links.push({
     name: "公益服务",
-    url: "/public-service/", // 可以设置一个默认路径，或者用"#"作为占位符
+    url: "/content/", // 可以设置一个默认路径，或者用"#"作为占位符
     icon: "material-symbols:volunteer-activism", // 使用合适的图标
     children: [
       {
