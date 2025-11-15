@@ -43,6 +43,9 @@
     color: var(--text-primary);
     background-color: var(--bg-primary);
     transition: color 0.3s ease, background-color 0.3s ease;
+    /* 确保 body 覆盖整个屏幕 */
+    min-height: 100vh;
+    position: relative;
   }
 
   a {
@@ -76,17 +79,23 @@
   ::-webkit-scrollbar-thumb:hover {
     background: var(--primary-color);
   }
+
+  /* 确保页面背景一致 */
+  #__astro {
+    background-color: var(--bg-primary);
+  }
 </style>
 
 <script is:inline>
-/* 性能优化的鼠标点击特效 */
+/* 修复版的鼠标点击特效 */
 document.addEventListener('DOMContentLoaded', function() {
   var a_idx = 0;
   var texts = ["天真", "富强", "民主", "文明", "和谐", "自由", "平等", "公正", "法治", "爱国", "敬业", "诚信", "友善"];
   var activeEffects = 0;
-  var maxEffects = 5; // 同时最多显示5个特效
+  var maxEffects = 5;
 
-  document.body.addEventListener('click', function(e) {
+  // 使用 document 而不是 body 来确保全屏覆盖
+  document.addEventListener('click', function(e) {
     // 限制同时显示的特效数量
     if (activeEffects >= maxEffects) return;
     
@@ -96,14 +105,14 @@ document.addEventListener('DOMContentLoaded', function() {
     span.textContent = texts[a_idx];
     a_idx = (a_idx + 1) % texts.length;
     
-    var x = e.pageX;
-    var y = e.pageY;
+    var x = e.clientX;  // 使用 clientX 而不是 pageX
+    var y = e.clientY;  // 使用 clientY 而不是 pageY
     
     Object.assign(span.style, {
-      zIndex: '999999',
+      zIndex: '2147483647', // 最大 z-index
       top: (y - 20) + 'px',
       left: x + 'px',
-      position: 'absolute',
+      position: 'fixed', // 使用 fixed 确保全屏覆盖
       fontWeight: 'bold',
       color: '#ff6651',
       fontSize: '22px',
@@ -118,10 +127,16 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.appendChild(span);
     
     const animation = span.animate([
-      { transform: 'translateY(0) scale(1)', opacity: 1 },
-      { transform: 'translateY(-160px) scale(1.2)', opacity: 0 }
+      { 
+        transform: 'translateY(0) scale(1)', 
+        opacity: 1 
+      },
+      { 
+        transform: 'translateY(-180px) scale(1.3)', 
+        opacity: 0 
+      }
     ], {
-      duration: 1500,
+      duration: 1800,
       easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
     });
     
@@ -132,5 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     };
   });
+
+  console.log('鼠标点击特效已加载 - 全屏覆盖版本');
 });
 </script>
