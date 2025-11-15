@@ -230,7 +230,7 @@ print("Hello GitHub!")
 
 ## 回到纯Markdown
 
-
+```
 <!-- 第一个播放器 -->
 <div class="music-item">
   <div class="song-info">别知己</div>
@@ -714,8 +714,9 @@ function formatTime(seconds) {
   return `${min}:${sec.toString().padStart(2, '0')}`;
 }
 </script>
-
+```
 ---
+
 表格示例：
 
 | 功能 | 描述 | 状态 |
