@@ -223,6 +223,43 @@ print("Hello GitHub!")
 
 ## 回到纯Markdown
 
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+
+<div id="aplayer"></div>
+
+<script>
+const ap = new APlayer({
+    container: document.getElementById('aplayer'),
+    audio: [{
+        name: '英雄泪',
+        artist: '王杰',
+        url: 'https://fly.hangdn.com/assets/music/%E8%8B%B1%E9%9B%84%E6%B3%AA2.mp3',
+        cover: https://fly.hangdn.com/assets/images/2favicon.ico',
+        lrc: `[00:00.00]英雄泪 - 王杰
+[00:05.00]作词：刘虞瑞
+[00:10.00]作曲：陈大力
+[00:15.00]
+[00:20.00]云里去 风里来
+[00:25.00]带着一身的尘埃
+[00:30.00]心也伤 情也冷 泪也干
+[00:40.00]悲也好 喜也好
+[00:45.00]命运有谁能知道
+[00:50.00]梦一场 是非恩怨
+[00:55.00]随风飘
+[01:00.00]看过冷漠的眼神
+[01:05.00]爱过一生无缘的人
+[01:10.00]才知世间人情永远不必问
+[01:20.00]热血在心中沸腾
+[01:25.00]却把岁月刻下伤痕
+[01:30.00]回首天已黄昏 有谁在乎我
+[01:40.00]...
+`
+    }]
+});
+</script>
+
 
 表格示例：
 
