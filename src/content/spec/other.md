@@ -45,10 +45,6 @@ title: "Other"
 
 **⭐Firefly开源地址：https://github.com/chnbsdan/Firefly** 
 
-::github{repo="chnbsdan/Firefly"}
-
-<img src="/assets/images/fly.png" />
-
 
 
 ## 📫 联系方式
