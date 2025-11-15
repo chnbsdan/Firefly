@@ -1,6 +1,5 @@
 ---
 title: "My" 
-layout: "../../layouts/PageLayout.astro"
 ---
 
 # My 页面内容
