@@ -50,9 +50,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
         icon: "material-symbols:other-admission",
       },
       {
-        name: "我的项目",
-        url: "/spec/my",
-        external: false,
+        name: "音乐馆",
+        url: "https://music.1356666.xyz",
+        external: true,
         icon: "material-symbols:person",
       },
       {
