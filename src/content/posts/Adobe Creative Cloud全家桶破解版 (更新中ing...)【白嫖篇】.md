@@ -8,7 +8,6 @@ category: 白嫖
 draft: false
 ---
 
-
 <div class="clean-music-player">
   <!-- 第一个播放器 -->
   <div class="music-item">
@@ -112,14 +111,14 @@ draft: false
   background: #ffffff;
   border: 1px solid #e1e5e9;
   border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 12px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   transition: all 0.2s ease;
-  height: 60px; /* 固定高度 */
+  min-height: 56px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .music-item:hover {
@@ -131,11 +130,12 @@ draft: false
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .song-info {
   flex: 1;
+  min-width: 0; /* 防止文本溢出 */
 }
 
 .song-title {
@@ -144,17 +144,23 @@ draft: false
   color: #1f2937;
   margin-bottom: 1px;
   line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .song-artist {
   font-size: 12px;
   color: #6b7280;
   line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .play-control {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border: 1px solid #e5e7eb;
   border-radius: 50%;
   background: #ffffff;
@@ -165,7 +171,7 @@ draft: false
   justify-content: center;
   transition: all 0.2s ease;
   flex-shrink: 0;
-  margin-left: 12px;
+  margin-left: 10px;
 }
 
 .play-control:hover {
@@ -188,7 +194,7 @@ draft: false
   background: #f3f4f6;
   border-radius: 2px;
   cursor: pointer;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   position: relative;
   overflow: hidden;
 }
@@ -223,13 +229,14 @@ draft: false
 .time-display {
   display: flex;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: 10px;
   color: #9ca3af;
   font-variant-numeric: tabular-nums;
+  line-height: 1;
 }
 
 .current-time, .total-time {
-  font-size: 11px;
+  font-size: 10px;
 }
 
 .audio-element {
@@ -287,9 +294,9 @@ draft: false
 /* 移动端优化 */
 @media (max-width: 640px) {
   .music-item {
-    padding: 10px;
-    margin-bottom: 10px;
-    height: 56px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    min-height: 52px;
   }
   
   .song-title {
@@ -301,14 +308,18 @@ draft: false
   }
   
   .play-control {
-    width: 28px;
-    height: 28px;
-    margin-left: 10px;
+    width: 26px;
+    height: 26px;
+    margin-left: 8px;
   }
   
   .play-control svg {
     width: 14px;
     height: 14px;
+  }
+  
+  .time-display {
+    font-size: 9px;
   }
 }
 </style>
@@ -406,6 +417,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
+
 
 ## 持续更新中ing……
 
