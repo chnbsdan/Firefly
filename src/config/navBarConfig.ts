@@ -40,26 +40,26 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
   // 添加公益服务项目
   links.push({
     name: "公益服务",
-    url: "/content/", // 可以设置一个默认路径，或者用"#"作为占位符
-    icon: "material-symbols:volunteer-activism", // 使用合适的图标
+    url: "/spec/", // 修改为指向 spec 目录的默认页面
+    icon: "material-symbols:volunteer-activism",
     children: [
       {
         name: "公共项目",
         url: "/spec/other",
         external: false,
-        icon: "material-symbols:other-admission", // 选择合适的图标
+        icon: "material-symbols:other-admission",
       },
       {
         name: "我的项目",
         url: "/spec/my",
         external: false,
-        icon: "material-symbols:person", // 选择合适的图标
+        icon: "material-symbols:person",
       },
       {
         name: "在线订阅转换",
-        url: "https://sub.2098.nyc.mn", // 替换为您想要的实际外部链接
+        url: "https://sub.2098.nyc.mn",
         external: true,
-        icon: "material-symbols:open-in-new", // 外部链接图标
+        icon: "material-symbols:open-in-new",
       },
     ],
   });
@@ -74,11 +74,12 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
     url: "/content/",
     icon: "material-symbols:info",
     children: [
-      ...(siteConfig.pages.anime ? [LinkPreset.Anime] : []), // 根据配置决定是否添加追番页面
-      ...(siteConfig.pages.sponsor ? [LinkPreset.Sponsor] : []), // 根据配置决定是否添加赞助页面
+      ...(siteConfig.pages.anime ? [LinkPreset.Anime] : []),
+      ...(siteConfig.pages.sponsor ? [LinkPreset.Sponsor] : []),
       LinkPreset.About,
     ],
   });
+  
   // 仅返回链接，其它导航搜索相关配置在模块顶层常量中独立导出
   return { links } as NavBarConfig;
 };
