@@ -1,3 +1,9 @@
+---
+title: "My" 
+layout: "../../layouts/PageLayout.astro"
+---
+
+# My 页面内容
 # [项目名称]：[简短有力的项目描述]
 
 > 一行吸引人的项目简介或标语
