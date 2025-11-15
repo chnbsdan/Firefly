@@ -159,6 +159,13 @@ Markdown列表：
 - **流畅动画**：入场动画和交互反馈
 - **现代化配色**：精心挑选的渐变色彩
 
+<audio controls style="width: 100%">
+  <source src="https://fly.hangdn.com/assets/music/%E5%88%AB%E7%9F%A5%E5%B7%B1%20(%E5%85%B8%E8%97%8F%E6%AD%A3%E7%89%88)%20-%20%E6%B5%B7%E6%9D%A5%E9%98%BF%E6%9C%A8.mp3" type="audio/flac">
+  您的浏览器不支持播放此音频。
+</audio>
+
+[🎵 别知已 - 海来阿木](https://fly.hangdn.com/assets/music/%E5%88%AB%E7%9F%A5%E5%B7%B1%20(%E5%85%B8%E8%97%8F%E6%AD%A3%E7%89%88)%20-%20%E6%B5%B7%E6%9D%A5%E9%98%BF%E6%9C%A8.mp3)
+
 <div class="highlight">
 <strong>💡 提示框</strong>：这里是使用HTML和CSS增强的内容区域
 </div>
