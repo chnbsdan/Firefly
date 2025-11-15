@@ -1139,9 +1139,12 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </details>
 ---
-```
+
+
 <details>
 <summary>音乐轮播（点击展开）</summary>
+
+```
 <div class="clean-music-player">
   <!-- 第一个播放器 -->
   <div class="music-item">
@@ -1551,8 +1554,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
-</details>
 ```
+</details>
+
 <footer style="text-align: center; color: #6a737d; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e1e4e8;">
 <p>© 2024 您的项目名称</p>
 </footer>
