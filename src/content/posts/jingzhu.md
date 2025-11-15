@@ -223,7 +223,7 @@ print("Hello GitHub!")
 
 ## 回到纯Markdown
 
-```html
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
 <script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
 
