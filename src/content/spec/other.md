@@ -1,6 +1,5 @@
 ---
 title: "Other"
-layout: "../../layouts/PageLayout.astro"
 ---
 
 # Other 页面内容
