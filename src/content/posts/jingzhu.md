@@ -11,7 +11,7 @@ sourceLink: "https://fly.hangdn.com"
 draft: false
 date: 2025-6-08
 # 修改这里：将对象改为字符串
-image: "https://fly.hangdn.com/assets/images/coverfly.png"
+image: "https://fly.hangdn.com/assets/images/mbcover.png"
 # 如果需要 alt 文本，可以放在其他地方或删除
 pubDate: 2025-6-08
 ---
