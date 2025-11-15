@@ -1,3 +1,9 @@
+---
+title: "Other"
+layout: "../../layouts/PageLayout.astro"
+---
+
+# Other 页面内容
 # 其他 / Other
 
 你好！我是 **小史先森** ，一个技术小白，在数字世界中默默无闻的一粒沙子。
