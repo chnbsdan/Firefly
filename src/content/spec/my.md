@@ -59,9 +59,4 @@ title: "My"
 - [依赖2]：[版本要求]
 - [依赖3]：[版本要求]
 
-### 安装步骤
 
-1. **克隆仓库**
-   ```bash
-   git clone https://github.com/your-username/your-project.git
-   cd your-project
