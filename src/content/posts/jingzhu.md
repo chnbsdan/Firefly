@@ -231,41 +231,54 @@ print("Hello GitHub!")
 ## 回到纯Markdown
 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
-<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<!-- 第一个播放器 -->
+<div class="music-item">
+  <div class="song-info">别知己</div>
+  <audio controls>
+    <source src="https://fly.hangdn.com/assets/music/%E5%88%AB%E7%9F%A5%E5%B7%B1%20(%E5%85%B8%E8%97%8F%E6%AD%A3%E7%89%88)%20-%20%E6%B5%B7%E6%9D%A5%E9%98%BF%E6%9C%A8.mp3" type="audio/flac">
+  </audio>
+</div>
 
-<div id="aplayer"></div>
+<!-- 第二个播放器 -->
+<div class="music-item">
+  <div class="song-info">英雄泪 - 王杰</div>
+  <audio controls>
+    <source src="https://fly.hangdn.com/assets/music/%E8%8B%B1%E9%9B%84%E6%B3%AA2.mp3" type="audio/flac">
+  </audio>
+</div>
 
-<script>
-const ap = new APlayer({
-    container: document.getElementById('aplayer'),
-    audio: [{
-        name: '英雄泪',
-        artist: '王杰',
-        url: 'https://fly.hangdn.com/assets/music/%E8%8B%B1%E9%9B%84%E6%B3%AA2.mp3',
-        cover: https://fly.hangdn.com/assets/images/2favicon.ico',
-        lrc: `[00:00.00]英雄泪 - 王杰
-[00:05.00]作词：刘虞瑞
-[00:10.00]作曲：陈大力
-[00:15.00]
-[00:20.00]云里去 风里来
-[00:25.00]带着一身的尘埃
-[00:30.00]心也伤 情也冷 泪也干
-[00:40.00]悲也好 喜也好
-[00:45.00]命运有谁能知道
-[00:50.00]梦一场 是非恩怨
-[00:55.00]随风飘
-[01:00.00]看过冷漠的眼神
-[01:05.00]爱过一生无缘的人
-[01:10.00]才知世间人情永远不必问
-[01:20.00]热血在心中沸腾
-[01:25.00]却把岁月刻下伤痕
-[01:30.00]回首天已黄昏 有谁在乎我
-[01:40.00]...
-`
-    }]
-});
-</script>
+<!-- 第三个播放器 -->
+<div class="music-item">
+  <div class="song-info">光辉岁月 - BEYOND</div>
+  <audio controls>
+    <source src="https://fly.hangdn.com/assets/music/光辉岁月 - BEYOND.mp3" type="audio/flac">
+  </audio>
+</div>
+
+<style>
+.music-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 15px;
+  margin-bottom: 15px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 1px solid #e9ecef;
+  max-width: 600px;
+}
+
+.song-info {
+  min-width: 200px;
+  font-weight: bold;
+  color: #333;
+}
+
+.music-item audio {
+  flex: 1;
+  height: 40px;
+}
+</style>
 
 
 表格示例：
