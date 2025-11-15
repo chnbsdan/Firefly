@@ -1,3 +1,64 @@
 ---
-
+// src/components/layout/GlobalStyles.astro (性能优化版本)
 ---
+
+<style is:global>
+  /* 您的全局样式... */
+</style>
+
+<script is:inline>
+/* 性能优化的鼠标点击特效 */
+document.addEventListener('DOMContentLoaded', function() {
+  var a_idx = 0;
+  var texts = ["天真", "富强", "民主", "文明", "和谐", "自由", "平等", "公正", "法治", "爱国", "敬业", "诚信", "友善"];
+  var activeEffects = 0;
+  var maxEffects = 5; // 同时最多显示5个特效
+
+  document.body.addEventListener('click', function(e) {
+    // 限制同时显示的特效数量
+    if (activeEffects >= maxEffects) return;
+    
+    activeEffects++;
+    
+    var span = document.createElement('span');
+    span.textContent = texts[a_idx];
+    a_idx = (a_idx + 1) % texts.length;
+    
+    var x = e.pageX;
+    var y = e.pageY;
+    
+    Object.assign(span.style, {
+      zIndex: '999999',
+      top: (y - 20) + 'px',
+      left: x + 'px',
+      position: 'fixed',
+      fontWeight: 'bold',
+      color: '#ff6651',
+      fontSize: '22px',
+      fontFamily: 'Microsoft YaHei, SimHei, sans-serif',
+      textShadow: '2px 2px 6px rgba(0,0,0,0.4)',
+      pointerEvents: 'none',
+      userSelect: 'none',
+      whiteSpace: 'nowrap',
+      willChange: 'transform, opacity'
+    });
+    
+    document.body.appendChild(span);
+    
+    const animation = span.animate([
+      { transform: 'translateY(0) scale(1)', opacity: 1 },
+      { transform: 'translateY(-160px) scale(1.2)', opacity: 0 }
+    ], {
+      duration: 1500,
+      easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+    });
+    
+    animation.onfinish = function() {
+      activeEffects--;
+      if (span.parentNode) {
+        span.parentNode.removeChild(span);
+      }
+    };
+  });
+});
+</script>
