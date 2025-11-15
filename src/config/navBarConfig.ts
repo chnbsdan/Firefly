@@ -45,13 +45,13 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
     children: [
       {
         name: "公共项目",
-        url: "/other",
+        url: "/other/",
         external: false,
         icon: "material-symbols:other-admission", // 选择合适的图标
       },
       {
         name: "我的项目",
-        url: "/my",
+        url: "/my/",
         external: false,
         icon: "material-symbols:person", // 选择合适的图标
       },
