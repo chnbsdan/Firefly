@@ -44,20 +44,20 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
     icon: "material-symbols:volunteer-activism", // 使用合适的图标
     children: [
       {
-        name: "Other",
+        name: "公共项目",
         url: "/other",
         external: false,
         icon: "material-symbols:other-admission", // 选择合适的图标
       },
       {
-        name: "My",
+        name: "我的项目",
         url: "/my",
         external: false,
         icon: "material-symbols:person", // 选择合适的图标
       },
       {
-        name: "外部链接",
-        url: "https://example.com", // 替换为您想要的实际外部链接
+        name: "在线订阅转换",
+        url: "https://sub.2098.nyc.mn", // 替换为您想要的实际外部链接
         external: true,
         icon: "material-symbols:open-in-new", // 外部链接图标
       },
